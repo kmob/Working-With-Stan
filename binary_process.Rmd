@@ -1,0 +1,100 @@
+---
+title: "Binary Process"
+author: "Kevin O'Brien"
+date: "11/29/2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+rm(list=ls())
+library(rstan)
+library(dplyr)
+library(DiagrammeR)
+```
+
+## Rate $\theta$ for a Binary Process
+
+Goal is to determine the posterior distribution for the rate $\theta$ after observing *k* successes in *n* trials.
+
+#### Graphical Model
+```{r}
+source("gm_binary_process.r")
+gm_binary_process()
+```
+
+#### Data
+```{r}
+# Data
+data <- read_rdump("data.R") 
+data
+```
+
+
+#### Stan Model
+```{r}
+model = c(
+"data {
+  int<lower=1> n; // at least one observation
+  int<lower=0> k; // success count can not be negative
+}
+
+parameters {
+  real<lower=0, upper=1> theta; // bounded by 0 and 1
+}
+
+model {
+  //Prior Distribution for Rate Theta
+  theta ~ beta(1, 1);
+  
+  // Observed Counts
+  // k has a binomial distribution of n observations 
+  // with theta variation
+  k ~ binomial(n, theta);
+}
+")
+cat(model)
+```
+
+
+#### Initialize Parameters
+Set inital values by providing a list equal in length to the 
+number of chains. The elements of this list should themselves 
+be named lists, where each of these named lists has the name 
+of a parameter and is used to specify the initial values for 
+that parameter for the corresponding chain. If initial values 
+are not provided, Stan provides random values.
+
+In this example, start chain 1 at .1 and chain 2 at .9 since $\theta$ is bounded at 0 and 1.
+```{r}
+myinits <- list(
+  list(theta=.1),
+  list(theta=.9))
+parameters <- c("theta")
+```
+
+#### Run Stan
+Output is a ... named "samples".
+```{r}
+samples <- stan(file="binomial_uniform_prior.stan",
+                data=data,
+                init=myinits,
+                pars=parameters,
+                iter=20000,
+                chains=2,
+                thin=1
+                # warmup = 100,  # Stands for burn-in; Default = iter/2
+                # seed = 123  # Setting seed; Default is random seed
+)
+```
+
+#### Quick Look
+```{r}
+print(samples)  # a rough summary
+```
+
+
+```{r}
+print(summary(samples))  # more detailed summary
+```
+
