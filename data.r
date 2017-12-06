@@ -4,6 +4,7 @@
 # # n is the number of observations
 # # size is outcome space where 1 means {0, 1}
 # # prob is the number of successes
+# set.seed(42) # fix the seed to replicate the sample
 # n <- rbinom(10, 1, 0.6)
 
 # # generate a data set to specific Bernoulli outcome 
