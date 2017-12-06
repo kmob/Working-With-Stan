@@ -1,9 +1,10 @@
 # k successes out of n trials
 
-# # draw random sample of Bernoulli trials using rbinom(n, size, prob)
-# # n is the number of observations
-# # size is outcome space where 1 means {0, 1}
-# # prob is the number of successes
+#### Random Sample of Bernoulli Trials
+# # draw random sample using rbinom(n, size, prob)
+# # n    - number of observations
+# # size - outcome space where 1 means {0, 1}
+# # prob - number of successes
 # set.seed(42) # fix the seed to replicate the sample
 # n <- rbinom(10, 1, 0.6)
 
