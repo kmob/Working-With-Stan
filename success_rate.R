@@ -67,9 +67,9 @@ mcmc_nuts_divergence(nuts_params(samples_default),
 mcmc_nuts_divergence(nuts_params(samples_custom), 
                      log_posterior(samples_custom))
 source("post_density_bayesplot.r")
-graph <- post_density_bayesplot(samples_default, "theta", 0.8)
+graph <- post_density_bayesplot(samples_default, "theta", 0.8, "mean")
 graph 
-graph <- post_density_bayesplot(samples_custom, "theta", 0.8)
+graph <- post_density_bayesplot(samples_custom, "theta", 0.8, "mean")
 graph 
 
 # Stan Output
