@@ -34,8 +34,12 @@ myinits <- list(
   list(theta=.9))  # chain 2 starts at .9
 parameters <- c("theta")
 
-# Run Stan
-samples <- stan(file="binomial_uniform_prior.stan",   
+# Run Stan with defaults
+samples_default <- stan(file="binomial_uniform_prior.stan",
+                        data=data_list)
+
+# Run Stan with custom setings
+samples_custom <- stan(file="binomial_uniform_prior.stan",   
                 data=data_list, 
                 init=myinits,  # If not specified, gives random inits
                 pars=parameters,
@@ -45,6 +49,28 @@ samples <- stan(file="binomial_uniform_prior.stan",
                 # warmup = 100,  # Stands for burn-in; Default = iter/2
                 # seed = 123  # Setting seed; Default is random seed
 )
+
+print(samples_default)
+print(samples_custom)
+mcmc_neff(neff_ratio(samples_default), size = 2)
+mcmc_neff(neff_ratio(samples_custom), size = 2)
+mcmc_acf(as.array(samples_default), pars = "theta", lags = 10)
+mcmc_acf(as.array(samples_custom), pars = "theta", lags = 10)
+mcmc_trace(as.array(samples_default), pars = "theta", 
+           np = nuts_params(samples_default)) +
+  xlab("Post-warmup iteration")
+mcmc_trace(as.array(samples_custom), pars = "theta", 
+           np = nuts_params(samples_custom)) +
+  xlab("Post-warmup iteration")
+mcmc_nuts_divergence(nuts_params(samples_default), 
+                     log_posterior(samples_default))
+mcmc_nuts_divergence(nuts_params(samples_custom), 
+                     log_posterior(samples_custom))
+source("post_density_bayesplot.r")
+graph <- post_density_bayesplot(samples_default, "theta", 0.8)
+graph 
+graph <- post_density_bayesplot(samples_custom, "theta", 0.8)
+graph 
 
 # Stan Output
 
