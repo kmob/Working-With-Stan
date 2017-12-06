@@ -46,52 +46,96 @@ samples <- stan(file="binomial_uniform_prior.stan",
                 # seed = 123  # Setting seed; Default is random seed
 )
 
-# Analysis Output
-# The commands below are useful for a quick overview:
+# Stan Output
+
+# Info from a S4 object of class "stanfit"
+# https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
+# get_stancode extracts the model
+stan_model <- get_stancode(samples)
+cat(stan_model)
+
+# print shows summary of parameter and log-posterior (lp__) 
+# posterior mean, posterior standard deviation, and quantiles
+# Monte Carlo standard error (se_mean)
+# effective sample size (n_eff)
+# R-hat statistic (Rhat)
 print(samples)  # a rough summary
-print(summary(samples))  # more detailed summary
 
-# Bayesplot: Look at rhat
-rhats <- rhat(samples)
-color_scheme_set("brightblue") # see help("color_scheme_set")
-mcmc_rhat(rhats) + yaxis_text(hjust = 1)
-
-# Bayesplot: Look at effective sample size
+#### Bayesplot ####
+# http://mc-stan.org/bayesplot/
+# neff_ratio - Look at effective sample size
+# Draws in a Markov chain are not independent if there is autocorrelation. 
+# If there is autocorrelation, the effective sample size will be smaller 
+# than the total sample size, N. 
+# The larger the ratio of neff to N the better.
 ratios_cp <- neff_ratio(samples)
 print(ratios_cp)
 mcmc_neff(ratios_cp, size = 2)
 
-# Bayesplot: Autocorrelation - centered parameterization (CP)
+# rhat - potential scale reduction statistic
+# If chains are at equilibrium, rhat will be 1. 
+# If the chains have not converged rhat will be greater than one.
+rhats <- rhat(samples)
+color_scheme_set("brightblue") # see help("color_scheme_set")
+mcmc_rhat(rhats) + yaxis_text(hjust = 1)
+
+# mcmc_acf - Autocorrelation - centered parameterization (CP)
+# View autocorrelation for each Markov chain separately up to a specified number of lags.
+# Lag - the distance between successive samples.
+# The autocorrelation function (ACF) relates correlation and lag. 
+# The values of the ACF should quickly decrease with increasing lag.
+# ACFs that do not decrease quickly with lag often indicate that the 
+# sampler is not exploring the posterior distribution efficiently and 
+# result in increased R^ values and decreased Neff values. 
+# https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf
 posterior_cp <- as.array(samples)
 mcmc_acf(posterior_cp, pars = "theta", lags = 10)
 
-# Bayesplot: Evaluate NUTS sampler
+# Evaluate NUTS sampler
+# log posterior over iterations
 lp_cp <- log_posterior(samples)
 head(lp_cp)
-
+# find iterations with divergence 
 np_cp <- nuts_params(samples)
 head(np_cp)
 
+# trace plot of MCMC draws and divergence, if any, for NUTS.
 color_scheme_set("mix-brightblue-gray")
 mcmc_trace(posterior_cp, pars = "theta", np = np_cp) +
   xlab("Post-warmup iteration")
 
+# further info on divergence
+# Divergences often indicate that some part of the 
+# posterior isn’t being explored. 
 color_scheme_set("red")
 mcmc_nuts_divergence(np_cp, lp_cp)
 
-# Stan_plot: Visual posterior analysis using ggplot2.
-# plot function given an object of class stanfit
+#### Stan_plot ####
+# Visual posterior analysis based on ggplot2.
+# plot function for an object of class stanfit
 plot(samples) 
 # use stan_plot with piping to specify ggplot attributes
-est_plot <- samples %>% 
+point_est <- "mean"
+uncertainty_interval <- 0.8
+outer_uncertainty_interval <- 0.95
+g_title <- paste("Plot of", point_est, "for parameters:", parameters)
+g_subtitle <- paste("Uncertainty intervals of", 
+                    uncertainty_interval,
+                    "and",
+                    outer_uncertainty_interval)
+g <- samples %>% 
   stan_plot(point_est = "mean", 
-            ci_level = 0.8, 
-            outer_level = 0.95) + 
-  xlab("X label")
+            ci_level = uncertainty_interval, 
+            outer_level = outer_uncertainty_interval) + 
+  labs(title = g_title, 
+       subtitle = g_subtitle)
 
-est_plot
+g
 
 ##### STOPPED HERE #####
+
+#### Other Analysis
+print(summary(samples))  # more detailed summary
 
   #point estimate and variability 2 levels
 stan_trace(samples) # traceplot shows
@@ -103,8 +147,6 @@ stan_rhat(samples)
 stan_ess(samples)
 stan_mcse(samples)
 stan_ac(samples)
-
-traceplot(samples) # traceplot shows 
 
 as.array(samples)[1:15,,2]  # array: sample, chain, parameter 
 # where parameter 1 is "theta"
