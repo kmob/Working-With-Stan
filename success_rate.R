@@ -2,12 +2,10 @@
 rm(list=ls())
 library(rstan)
 library(bayesplot)
-
 library(dplyr)
+library(feather)
 
-# library(DiagrammeR)
-
-# Data
+##### Data #####
 data_name <- "single_rate"
 
 # Simulate Data
@@ -24,6 +22,7 @@ data_list <- list(n = length(data$obs),
 # Visualize Data
 ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 
+#### Model ####
 # Visualize Model
 source("gm_binary_process.r")
 gm_binary_process()

@@ -2,23 +2,25 @@
 rm(list=ls())
 library(rstan)
 library(bayesplot)
-
 library(dplyr)
-# library(DiagrammeR)
+library(feather)
 
-# Data
-data <- read_rdump("two_rates_data.R") 
+##### Data #####
+data_name <- "two_rates"
+
+# Simulate Data
+source("sim_data.r")
+sim_data(data_name, 10, c(0.9, 0.5, 0.1))
+
+# Read Data
+data <- read_feather(paste(data_name, ".feather", sep = ""))
 
 # Stan needs data in a list
-data_list <- list(n1 = length(data$t1),
-                  k1 = length(subset(data$t1, data$t1 == 1)),
-                  n2 = length(data$t2),
-                  k2 = length(subset(data$t2, data$t2 == 1)))
+data_list <- list(n = length(data$obs),
+                  k = length(subset(data$obs, data$obs == 1)))
 
 # Visualize Data
-source("bernoulli_outcomes_ggplot.R")
-graph <- bernoulli_outcomes_ggplot(data)
-graph
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 
 # Visualize Model
 source("gm_binary_process.r")
