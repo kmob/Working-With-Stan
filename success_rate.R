@@ -10,8 +10,8 @@ library(dplyr)
 data <- read_rdump("data.R") 
 
 # Stan needs data in a list
-data_list <- list(n = length(data$n),
-             k = length(subset(data$n, data$n == 1)))
+data_list <- list(n = length(data$obs),
+             k = length(subset(data$obs, data$obs == 1)))
 
 # Visualize Data
 source("bernoulli_outcomes_ggplot.R")
