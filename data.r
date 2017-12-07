@@ -17,3 +17,4 @@ n <- n[sample(1:length(n))]
 # # set k successes and N trials
 # k <- 6
 # n <- 10
+

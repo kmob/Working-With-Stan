@@ -10,10 +10,10 @@ library(dplyr)
 data <- read_rdump("two_rates_data.R") 
 
 # Stan needs data in a list
-data_list <- list(n1 = length(data$n1),
-                  k1 = length(subset(data$n1, data$n1 == 1)),
-                  n2 = length(data$n2),
-                  k2 = length(subset(data$n2, data$n2 == 1)))
+data_list <- list(n1 = length(data$t1),
+                  k1 = length(subset(data$t1, data$t1 == 1)),
+                  n2 = length(data$t2),
+                  k2 = length(subset(data$t2, data$t2 == 1)))
 
 # Visualize Data
 source("bernoulli_outcomes_ggplot.R")
