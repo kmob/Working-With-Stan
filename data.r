@@ -8,8 +8,8 @@ process <- c(rep("theta", 10))
 # # n    - number of observations
 # # size - outcome space where 1 means {0, 1}
 # # prob - number of successes
-set.seed(42) # fix the seed to replicate the sample
-obs <- rbinom(10, 1, 0.6)
+# set.seed(42) # fix the seed to replicate the sample
+# obs <- rbinom(10, 1, 0.6)
 
 # # generate a data set to specific Bernoulli outcome 
 # # 6 successes out of 10

@@ -4,19 +4,25 @@ library(rstan)
 library(bayesplot)
 
 library(dplyr)
+
 # library(DiagrammeR)
 
 # Data
-data <- read_rdump("data.R") 
+data_name <- "single_rate"
+
+# Simulate Data
+source("sim_data.r")
+sim_data(data_name)
+
+# Read Data
+data <- read_feather(paste(data_name, ".feather", sep = ""))
 
 # Stan needs data in a list
 data_list <- list(n = length(data$obs),
              k = length(subset(data$obs, data$obs == 1)))
 
 # Visualize Data
-source("bernoulli_outcomes_ggplot.R")
-graph <- bernoulli_outcomes_ggplot(data)
-graph
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 
 # Visualize Model
 source("gm_binary_process.r")
