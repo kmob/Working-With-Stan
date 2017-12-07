@@ -7,11 +7,13 @@ library(dplyr)
 # library(DiagrammeR)
 
 # Data
-data <- read_rdump("data.R") 
+data <- read_rdump("two_rates_data.R") 
 
 # Stan needs data in a list
-data_list <- list(n = length(data$n),
-             k = length(subset(data$n, data$n == 1)))
+data_list <- list(n1 = length(data$n1),
+                  k1 = length(subset(data$n1, data$n1 == 1)),
+                  n2 = length(data$n2),
+                  k2 = length(subset(data$n2, data$n2 == 1)))
 
 # Visualize Data
 source("bernoulli_outcomes_ggplot.R")
