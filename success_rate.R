@@ -5,23 +5,27 @@ library(bayesplot)
 library(dplyr)
 library(feather)
 
+code_dir <- "src/"
+data_dir <- "data/"
+
 ##### Data #####
 data_name <- "one_rate"
 
 # Simulate Data
-source("sim_data.r")
+source(paste(code_dir,"sim_data.r",sep = ""))
 rate_list <- c(0.6)
-sim_data(data_name, 10, rate_list, "fixed")
+data_file <- paste(data_dir, data_name, sep = "")
+sim_data(data_file, 10, rate_list, "fixed")
 
 # Read Data
-data <- read_feather(paste(data_name, ".feather", sep = ""))
+data <- read_feather(paste(data_file, ".feather", sep = ""))
 
 # Visualize Data
 ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 
 #### Model ####
 # Visualize Model
-source("gm_binary_process.r")
+source(paste(code_dir,"gm_binary_process.r",sep = ""))
 gm_binary_process()
 
 #### STAN ####
@@ -78,7 +82,7 @@ mcmc_nuts_divergence(nuts_params(samples_default),
                      log_posterior(samples_default))
 mcmc_nuts_divergence(nuts_params(samples_custom), 
                      log_posterior(samples_custom))
-source("post_density_bayesplot.r")
+source(paste(code_dir,"post_density_bayesplot.r",sep = ""))
 graph <- post_density_bayesplot(samples_default, "theta", 0.8, "mean")
 graph 
 graph <- post_density_bayesplot(samples_custom, "theta", 0.8, "mean")
@@ -197,27 +201,27 @@ theta <- rstan::extract(samples_default)$theta
 
 # Visualize Predictions
 ###### Visualization using r's plot function ######
-source("post_density_plot.r")
+source(paste(code_dir,"post_density_plot.r",sep = ""))
 post_density_plot(theta, 80)
 
 ###### USING BAYESPLOT TO PRODUCE A TRACE ##########
-source("sample_trace_bayesplot.r")
+source(paste(code_dir,"sample_trace_bayesplot.r",sep = ""))
 graph <- sample_trace_bayesplot(samples_default, "theta")
 graph 
 
 ###### USING BAYESPLOT TO PRODUCE A HISTOGRAM ##########
-source("post_density_bayesplot.r")
+source(paste(code_dir,"post_density_bayesplot.r",sep = ""))
 graph <- post_density_bayesplot(samples_default, "theta", 0.8, "mean")
 graph 
 
 ######## USING GGPLOT2 TO PRODUCE A HISTOGRAM #########
-source("post_density_ggplot.r")
+source(paste(code_dir,"post_density_ggplot.r",sep = ""))
 graph <- post_density_ggplot(samples_default)
 graph
 
 ######## USING METRICSGRAPHICS JS #####################
 # http://hrbrmstr.github.io/metricsgraphics/
 # https://github.com/mozilla/metrics-graphics
-source("post_density_mjs.r")
+source(paste(code_dir,"post_density_mjs.r",sep = ""))
 graph <- post_density_mjs(samples_default, 80)
 graph

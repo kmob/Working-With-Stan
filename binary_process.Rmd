@@ -26,6 +26,7 @@ gm_binary_process()
 #### Data
 ```{r}
 # Data
+## TODO - switch to sim_data.r
 data <- read_rdump("data.R") 
 data
 ```

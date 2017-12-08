@@ -1,8 +1,9 @@
 # k successes out of n trials
 
-sim_data <- function(data_name, observations, process_list, sample){
+sim_data <- function(data_file, observations, process_list, sample){
   
   library(feather)
+  library(dplyr)
   
   # data_name <- "test"
   # observations <- 10
@@ -17,17 +18,8 @@ sim_data <- function(data_name, observations, process_list, sample){
   # # n    - number of observations
   # # size - outcome space where 1 means {0, 1}
   # # prob - number of successes
-  # while (i > 0) {
-  #   # add one obs vs add a set of observations???
-  #   process_name <- paste("theta_", i, sep = "")
-  #   process <- c(process, rep(process_name, observations))
-  #   obs <- c(obs, rbinom(observations, 1, process_list[i]))
-  #   i <- i-1
-  #   print(i)
-  # }
-  
-  # # generate a data set to specific Bernoulli outcome 
-  # # 6 successes out of 10
+  # # OR generate a data set to specific Bernoulli outcome 
+  # # k successes out of n
   # # randomize the sequence 
   while (i > 0) {
     # add one obs vs add a set of observations???
@@ -52,9 +44,7 @@ sim_data <- function(data_name, observations, process_list, sample){
   df <- df %>%
     mutate(outcome = ifelse(obs == 0, "failure",
                             ifelse(obs == 1, "success", NA)))
-  
-  feather_filename <- paste(data_name, ".feather", sep="")
-  write_feather(df, feather_filename)
+  write_feather(df, paste(data_file, ".feather", sep=""))
 }
 
 
