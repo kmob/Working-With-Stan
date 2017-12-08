@@ -1,0 +1,5 @@
+---
+  title: "Bernoulli Trials - One Source"
+---
+  
+  # More about Stan

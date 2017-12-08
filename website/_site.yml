@@ -1,0 +1,21 @@
+name: "Working With Stan"
+navbar:
+  title: "Working With Stan"
+  left:
+    - text: "Summary"
+      href: index.html
+    - text: "Bernoulli Trials - One Source"
+      href: one_source.html
+    - text: "Bernoulli Trials - Two Sources"
+      href: two_sources.html
+    - text: "Diagnostics"
+      href: diag_details.html
+    - text: "About"
+      href: about.html
+output:
+  html_document:
+    theme: paper
+    highlight: textmate
+    include:
+      after_body: footer.html
+    css: styles.css

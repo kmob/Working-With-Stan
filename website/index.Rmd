@@ -1,0 +1,39 @@
+---
+title: "Summary"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/06/2017"
+params:
+  code_dir: src/
+  data_dir: ./data/
+  model_dir: model/
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(rstan)
+library(bayesplot)
+library(dplyr)
+library(feather)
+
+```
+
+## Topic 1
+
+some stuff
+
+## Topic 2
+
+some stuff
+
+## Topic 3
+
+some stuff
