@@ -34,16 +34,19 @@ sim_data <- function(data_name, observations, process_list, sample){
     process_name <- paste("theta_", i, sep = "")
     process <- c(process, rep(process_name, observations))
     
-    success_ct <- process_list[i]*observations
-    failure_ct <- observations - success_ct
-    new_obs <- c(rep(0,failure_ct),rep(1,success_ct))
-    new_obs <- new_obs[sample(1:length(new_obs))]
-    obs <- c(obs, new_obs)
-
+    if (sample == "random") {
+      obs <- c(obs, rbinom(observations, 1, process_list[i]))
+    } else if (sample == "fixed") {
+      success_ct <- process_list[i]*observations
+      failure_ct <- observations - success_ct
+      new_obs <- c(rep(0,failure_ct),rep(1,success_ct))
+      new_obs <- new_obs[sample(1:length(new_obs))]
+      obs <- c(obs, new_obs)      
+    }
     i <- i-1
     print(i)
   }
-
+  
   # build data frame
   df <- dplyr::data_frame(process, obs)
   df <- df %>%
@@ -52,7 +55,7 @@ sim_data <- function(data_name, observations, process_list, sample){
   
   feather_filename <- paste(data_name, ".feather", sep="")
   write_feather(df, feather_filename)
-  }
+}
 
 
 

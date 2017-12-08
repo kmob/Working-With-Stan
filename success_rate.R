@@ -6,18 +6,15 @@ library(dplyr)
 library(feather)
 
 ##### Data #####
-data_name <- "single_rate"
+data_name <- "one_rate"
 
 # Simulate Data
 source("sim_data.r")
-sim_data(data_name)
+rate_list <- c(0.6)
+sim_data(data_name, 10, rate_list, "fixed")
 
 # Read Data
 data <- read_feather(paste(data_name, ".feather", sep = ""))
-
-# Stan needs data in a list
-data_list <- list(n = length(data$obs),
-             k = length(subset(data$obs, data$obs == 1)))
 
 # Visualize Data
 ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
@@ -27,6 +24,7 @@ ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 source("gm_binary_process.r")
 gm_binary_process()
 
+#### STAN ####
 # Parameters
 # inits via list:
 #   Set inital values by providing a list equal in length to the 
@@ -39,13 +37,22 @@ myinits <- list(
   list(theta=.9))  # chain 2 starts at .9
 parameters <- c("theta")
 
+# Stan needs data in a list
+  success_data <- data %>%
+    dplyr::filter(outcome == 'success')
+  
+  stan_data <- list(
+    n = nrow(data),
+    k = nrow(success_data)
+  )
+
 # Run Stan with defaults
 samples_default <- stan(file="binomial_uniform_prior.stan",
-                        data=data_list)
+                        data=stan_data)
 
 # Run Stan with custom setings
 samples_custom <- stan(file="binomial_uniform_prior.stan",   
-                data=data_list, 
+                data=stan_data, 
                 init=myinits,  # If not specified, gives random inits
                 pars=parameters,
                 iter=20000, 
@@ -82,7 +89,7 @@ graph
 # Info from a S4 object of class "stanfit"
 # https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html
 # get_stancode extracts the model
-stan_model <- get_stancode(samples)
+stan_model <- get_stancode(samples_default)
 cat(stan_model)
 
 # print shows summary of parameter and log-posterior (lp__) 
@@ -90,7 +97,7 @@ cat(stan_model)
 # Monte Carlo standard error (se_mean)
 # effective sample size (n_eff)
 # R-hat statistic (Rhat)
-print(samples)  # a rough summary
+print(samples_default)  # a rough summary
 
 #### Bayesplot ####
 # http://mc-stan.org/bayesplot/
@@ -99,14 +106,14 @@ print(samples)  # a rough summary
 # If there is autocorrelation, the effective sample size will be smaller 
 # than the total sample size, N. 
 # The larger the ratio of neff to N the better.
-ratios_cp <- neff_ratio(samples)
+ratios_cp <- neff_ratio(samples_default)
 print(ratios_cp)
 mcmc_neff(ratios_cp, size = 2)
 
 # rhat - potential scale reduction statistic
 # If chains are at equilibrium, rhat will be 1. 
 # If the chains have not converged rhat will be greater than one.
-rhats <- rhat(samples)
+rhats <- rhat(samples_default)
 color_scheme_set("brightblue") # see help("color_scheme_set")
 mcmc_rhat(rhats) + yaxis_text(hjust = 1)
 
@@ -119,15 +126,15 @@ mcmc_rhat(rhats) + yaxis_text(hjust = 1)
 # sampler is not exploring the posterior distribution efficiently and 
 # result in increased R^ values and decreased Neff values. 
 # https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf
-posterior_cp <- as.array(samples)
+posterior_cp <- as.array(samples_default)
 mcmc_acf(posterior_cp, pars = "theta", lags = 10)
 
 # Evaluate NUTS sampler
 # log posterior over iterations
-lp_cp <- log_posterior(samples)
+lp_cp <- log_posterior(samples_default)
 head(lp_cp)
 # find iterations with divergence 
-np_cp <- nuts_params(samples)
+np_cp <- nuts_params(samples_default)
 head(np_cp)
 
 # trace plot of MCMC draws and divergence, if any, for NUTS.
@@ -144,7 +151,7 @@ mcmc_nuts_divergence(np_cp, lp_cp)
 #### Stan_plot ####
 # Visual posterior analysis based on ggplot2.
 # plot function for an object of class stanfit
-plot(samples) 
+plot(samples_default) 
 # use stan_plot with piping to specify ggplot attributes
 point_est <- "mean"
 uncertainty_interval <- 0.8
@@ -154,7 +161,7 @@ g_subtitle <- paste("Uncertainty intervals of",
                     uncertainty_interval,
                     "and",
                     outer_uncertainty_interval)
-g <- samples %>% 
+g <- samples_default %>% 
   stan_plot(point_est = "mean", 
             ci_level = uncertainty_interval, 
             outer_level = outer_uncertainty_interval) + 
@@ -166,27 +173,27 @@ g
 ##### STOPPED HERE #####
 
 #### Other Analysis
-print(summary(samples))  # more detailed summary
+print(summary(samples_default))  # more detailed summary
 
   #point estimate and variability 2 levels
-stan_trace(samples) # traceplot shows
-stan_hist(samples)
-stan_dens(samples)
-stan_scat(samples)
-stan_diag(samples)
-stan_rhat(samples)
-stan_ess(samples)
-stan_mcse(samples)
-stan_ac(samples)
+stan_trace(samples_default) # traceplot shows
+stan_hist(samples_default)
+stan_dens(samples_default)
+stan_scat(samples_default)
+stan_diag(samples_default)
+stan_rhat(samples_default)
+stan_ess(samples_default)
+stan_mcse(samples_default)
+stan_ac(samples_default)
 
-as.array(samples)[1:15,,2]  # array: sample, chain, parameter 
+as.array(samples_default)[1:15,,2]  # array: sample, chain, parameter 
 # where parameter 1 is "theta"
 # and parameter 2 is "lp__" - the log posterior density 
 # convergence of log posterior density is critical to declaring convergence
 # stan-reference-2.16.0.pdf pg 368-369
 
 # Collect posterior and prior samples across all chains:
-theta <- rstan::extract(samples)$theta
+theta <- rstan::extract(samples_default)$theta
 
 # Visualize Predictions
 ###### Visualization using r's plot function ######
@@ -195,22 +202,22 @@ post_density_plot(theta, 80)
 
 ###### USING BAYESPLOT TO PRODUCE A TRACE ##########
 source("sample_trace_bayesplot.r")
-graph <- sample_trace_bayesplot(samples, "theta")
+graph <- sample_trace_bayesplot(samples_default, "theta")
 graph 
 
 ###### USING BAYESPLOT TO PRODUCE A HISTOGRAM ##########
 source("post_density_bayesplot.r")
-graph <- post_density_bayesplot(samples, "theta", 0.8, "mean")
+graph <- post_density_bayesplot(samples_default, "theta", 0.8, "mean")
 graph 
 
 ######## USING GGPLOT2 TO PRODUCE A HISTOGRAM #########
 source("post_density_ggplot.r")
-graph <- post_density_ggplot(samples)
+graph <- post_density_ggplot(samples_default)
 graph
 
 ######## USING METRICSGRAPHICS JS #####################
 # http://hrbrmstr.github.io/metricsgraphics/
 # https://github.com/mozilla/metrics-graphics
 source("post_density_mjs.r")
-graph <- post_density_mjs(samples, 80)
+graph <- post_density_mjs(samples_default, 80)
 graph
