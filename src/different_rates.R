@@ -5,13 +5,19 @@ library(bayesplot)
 library(dplyr)
 library(feather)
 
+code_dir <- "src/"
+data_dir <- "./data/"
+model_dir <- "model/"
+
 ##### Data #####
 data_name <- "two_rates"
+rate_list <- c(0.9, 0.1)
+obs_ct <- 10
 
 # Simulate Data
-source("sim_data.r")
-rate_list <- c(0.9, 0.1)
-sim_data(data_name, 100, rate_list, "fixed")
+source(paste(code_dir,"sim_data.r",sep = ""))
+data_file <- paste(data_dir, data_name, sep = "")
+sim_data(data_file, obs_ct, rate_list, "fixed")
 
 # Read Data
 data <- read_feather(paste(data_name, ".feather", sep = ""))

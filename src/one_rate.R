@@ -6,16 +6,18 @@ library(dplyr)
 library(feather)
 
 code_dir <- "src/"
-data_dir <- "data/"
+data_dir <- "./data/"
+model_dir <- "model/"
 
 ##### Data #####
 data_name <- "one_rate"
+rate_list <- c(0.6)
+obs_ct <- 10
 
 # Simulate Data
 source(paste(code_dir,"sim_data.r",sep = ""))
-rate_list <- c(0.6)
 data_file <- paste(data_dir, data_name, sep = "")
-sim_data(data_file, 10, rate_list, "fixed")
+sim_data(data_file, obs_ct, rate_list, "fixed")
 
 # Read Data
 data <- read_feather(paste(data_file, ".feather", sep = ""))
@@ -50,21 +52,23 @@ parameters <- c("theta")
     k = nrow(success_data)
   )
 
-# Run Stan with defaults
-samples_default <- stan(file="binomial_uniform_prior.stan",
-                        data=stan_data)
-
-# Run Stan with custom setings
-samples_custom <- stan(file="binomial_uniform_prior.stan",   
-                data=stan_data, 
-                init=myinits,  # If not specified, gives random inits
-                pars=parameters,
-                iter=20000, 
-                chains=2, 
-                thin=1
-                # warmup = 100,  # Stands for burn-in; Default = iter/2
-                # seed = 123  # Setting seed; Default is random seed
-)
+  model_code <- paste(model_dir, "binomial_one_rate.stan", sep = "")
+  
+  # Run Stan with defaults
+  samples_default <- stan(file=model_code,
+                          data=stan_data)
+  
+  # Run Stan with custom setings
+  samples_custom <- stan(file=model_code,   
+                         data=stan_data, 
+                         init=myinits,  # If not specified, gives random inits
+                         pars=parameters,
+                         iter=20000, 
+                         chains=2, 
+                         thin=1
+                         # warmup = 100,  # Stands for burn-in; Default = iter/2
+                         # seed = 123  # Setting seed; Default is random seed
+  )
 
 print(samples_default)
 print(samples_custom)
