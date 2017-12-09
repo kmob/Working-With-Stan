@@ -36,7 +36,6 @@ sim_data <- function(data_file, observations, process_list, sample){
       obs <- c(obs, new_obs)      
     }
     i <- i-1
-    print(i)
   }
   
   # build data frame

@@ -26,14 +26,30 @@ library(feather)
 
 ```
 
-## Topic 1
+## The Walk
 
-some stuff
+![Random](images/drunkard.png)
 
-## Topic 2
+## The Normal Distribution
 
-some stuff
+![Normal](images/normal-distribution-probability.jpg)
 
-## Topic 3
+All data is normally distributed... except when it isn't.
 
-some stuff
+## 0.05
+![p_value](images/Standard_deviation_diagram.png)
+The p value tells all... except when it doesn't (and how did you get 846 degrees of freedom in your error term?).
+
+## Confidence Intervals
+![CI](images/Bell-curve-sm1.jpg)
+
+NHST confidence intervals will clarify all... after two or three months of explaining NHST confidence intervals.
+
+## Continuous Variables
+
+All data is continuous... except when it isn't.
+
+## R. A. Fisher Says
+![Fisher](images/statistical_methods_4.jpg)
+
+What would Fisher do?
