@@ -27,21 +27,28 @@ library(feather)
 ```
 
 ## The Walk
-
+<div style="width:450px; height=300px">
 ![Random](images/drunkard.png)
+</div>
 
 ## The Normal Distribution
-
+<div style="width:450px; height=300px">
 ![Normal](images/normal-distribution-probability.jpg)
+</div>
 
 All data is normally distributed... except when it isn't.
 
 ## 0.05
+<div style="width:450px; height=300px">
 ![p_value](images/Standard_deviation_diagram.png)
+</div>
+
 The p value tells all... except when it doesn't (and how did you get 846 degrees of freedom in your error term?).
 
 ## Confidence Intervals
+<div style="width:450px; height=300px">
 ![CI](images/Bell-curve-sm1.jpg)
+</div>
 
 NHST confidence intervals will clarify all... after two or three months of explaining NHST confidence intervals.
 
@@ -50,6 +57,8 @@ NHST confidence intervals will clarify all... after two or three months of expla
 All data is continuous... except when it isn't.
 
 ## R. A. Fisher Says
-![Fisher](images/statistical_methods_4.jpg)
+<div style="width:450px; height=300px">
+![Statistical Methods For Research Workers](images/statistical_methods_4.jpg)
+</div>
 
 What would Fisher do?
