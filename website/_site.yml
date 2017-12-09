@@ -1,17 +1,21 @@
-name: "Working With Stan"
+name: Working With Stan
 navbar:
-  title: "Working With Stan"
+  title: Working With Stan
   left:
-    - text: "Summary"
-      href: index.html
-    - text: "Bernoulli Trials - One Source"
-      href: one_source.html
-    - text: "Bernoulli Trials - Two Sources"
-      href: two_sources.html
-    - text: "Diagnostics"
-      href: diag_details.html
-    - text: "About"
-      href: about.html
+  - text: Summary
+    href: index.html
+  - text: One Process
+    href: one_source.html
+  - text: Two Processes
+    href: two_sources.html
+  - text: Common Process
+    href: common_source.html
+  - text: Diagnostics
+    href: diag_details.html
+  - text: References
+    href: references.html
+  - text: About
+    href: about.html
 output:
   html_document:
     theme: paper
@@ -19,3 +23,7 @@ output:
     include:
       after_body: footer.html
     css: styles.css
+    lib_dir: site_libs
+    self_contained: no
+output_dir: _site
+

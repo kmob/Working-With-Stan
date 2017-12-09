@@ -1,5 +1,5 @@
 ---
-title: "Bernoulli Trials - One Source"
+title: "Bernoulli Trials - One Process"
 output:
   html_document:
     fig_caption: yes
@@ -161,4 +161,9 @@ plot(samples_default)
 ```
 
 And a better plot of $\theta$
+```{r bayesplot, echo = FALSE, message = FALSE}
+source(paste(params$code_dir,"post_density_bayesplot.r",sep = ""))
+g <- post_density_bayesplot(samples_default, parameters, 0.8, "mean")
+g 
+```
 

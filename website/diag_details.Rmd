@@ -2,4 +2,7 @@
   title: "Diagnostics"
 ---
   
-  # More about Stan
+### Diagnostic tools in Stan
+
+
+### Diagnostic tools in BayesPlot

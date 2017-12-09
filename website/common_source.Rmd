@@ -1,5 +1,5 @@
 ---
-title: "Bernoulli Trials - Difference Between Two Processes"
+title: "Bernoulli Trials - Common Process For Multiple Sources"
 output:
   html_document:
     fig_caption: yes
@@ -27,7 +27,7 @@ library(ggplot2)
 ```
 ## The Data
 
-Independent observations with two possible outcomes on a trial. And some characteristic that allows separating the trials into to groups. Imagine an underlying process difference that might account for differences in success (e.g., coins from different mints have a different bias) and a single process $\delta$ to characterize the difference between them.
+Independent observations with two possible outcomes on a trial. And some characteristic that allows separating the trials into to groups. Imagine an underlying process difference that might account for differences in success (e.g., coins from different mints have a different bias).
 
 Simulate a data set __data__ with _k_ successes in _n_ trials and $\theta$ processes. Start with 10 trials and a success rate of 90% for one group and 10% for the other.
 
@@ -91,12 +91,11 @@ class(stan_data)
 
 A graphical representation of the model shows:
 
- * a continuous, unobserved "process" parameter $\delta$
  * a continuous, unobserved "process" parameter $\theta$
  * a discrete, observable number of successes *k*
  * a discrete, observable number of observations *n*
 
-The vector's arrow shows dependency. Successes are dependent on both the underlying process $\theta$ and the number of observations. The difference between $\theta$s is addressed by $\delta$.
+The vector's arrow shows dependency. Successes are dependent on both the underlying process $\theta$ and the number of observations. 
 
 The assumption for $\theta$ is that all possible rates are equally likely. The Beta distribution is set with 1 "success" and 1 "failure".
 
@@ -104,15 +103,14 @@ The assumption of *k* is that the outcomes are from a Binomial distribution with
 
 ```{r graphical_model, echo = FALSE, message = FALSE}
 # Visualize Model
-source(paste(params$code_dir,"gm_two_rates.r",sep = ""))
-gm_two_rates()
+source(paste(params$code_dir,"gm_common_rates.r",sep = ""))
+gm_common_rates()
 ```
 
 
 The Stan model follows from the graphical model.
 The data block names *n* and *k* and sets lower boundaries.
-The parameters block names $\theta$ and sets upper and lower boundaries. Transformed parameters block names $\delta$ as the difference between the two $\theta$ processes.
-The model block sets the prior distribution for $\theta$ and the model for *k1* and *k2*.
+The parameters block names $\theta$ and sets upper and lower boundaries. The model block sets the prior distribution for $\theta$ and a model for *k1* and *k2*. The generated quantities block uses the model output to produce predicted sample for *k1* and *k2*.
 ```{r stan_model, echo = FALSE, message = FALSE}
 model = c(
 "
@@ -123,22 +121,22 @@ data {
   int<lower=0> k2;
 } 
 parameters {
-  real<lower=0,upper=1> theta1;
-  real<lower=0,upper=1> theta2;
+  real<lower=0,upper=1> theta;
 } 
-transformed parameters {
-  real<lower=-1,upper=1> delta;
-  // deterministic variable delta is the difference
-  // between rates from two processes producing k1 and k2 outcomes
-  delta = theta1 - theta2;
-}
 model {
-  // Prior Distribution for Rate Theta
-  theta1 ~ beta(1, 1);
-  theta2 ~ beta(1, 1);
+  // Prior on Single Rate Theta
+  theta ~ beta(1, 1);
   // Observed Counts
-  k1 ~ binomial(n1, theta1);
-  k2 ~ binomial(n2, theta2);
+  k1 ~ binomial(n1, theta);
+  k2 ~ binomial(n2, theta);
+}
+generated quantities {
+  int<lower=0,upper=n1> postpredk1;
+  int<lower=0,upper=n2> postpredk2;
+  
+  // Posterior Predictive
+  postpredk1 = binomial_rng(n1, theta);
+  postpredk2 = binomial_rng(n2, theta);
 }
 ")
 cat(model)
@@ -149,9 +147,9 @@ cat(model)
 
 (Andrew Gelman said this and I'm taking him at his word!)
 ```{r stan_set_up, message = FALSE, results = "hide", cache = TRUE}
-model_code <- paste(params$model_dir, "binomial_two_rates.stan", sep = "")
+model_code <- paste(params$model_dir, "binomial_common_rates.stan", sep = "")
 # parameters to be monitored:  
-parameters <- c("theta1", "theta2", "delta")
+parameters <- c("theta1", "theta2")
 
 # Run Stan with defaults
 samples_default <- stan(file=model_code,
@@ -166,15 +164,52 @@ class(samples_default)
 
 And, simply running basic commands against the Stan object will produce reports and graphs specific to the class.
 
-A summary table:
+#### A summary table:
 ```{r}
 print(samples_default)
 ```
 
-A plot of parameters
+#### A plot of parameters
 ```{r}
 plot(samples_default) 
 ```
 
-And a better plot of $\theta$
+## Make Sense?
+And, again, a plot of the data.
+```{r visualize_data_again, fig.width=4, fig.height=4}
+
+# Visualize Data
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
+```
+
+See both together.
+```{r, fig.width=4, fig.height=4}
+theta      <- rstan::extract(samples_default)$theta
+postpredk1 <- rstan::extract(samples_default)$postpredk1
+postpredk2 <- rstan::extract(samples_default)$postpredk2
+
+plot(stan_data$k1, stan_data$k2, 
+     type="p", pch=4, cex=2, lwd=2, 
+     xlab="Success - k1",
+     ylab="Success - k2", 
+     xlim=c(-1, stan_data$n1+1), 
+     ylim=c(-1, stan_data$n2+1))        
+nsamples <- length(theta)
+sc <- 10
+# add a symbol at each possible outcome of sets 1 and 2
+# size the symbol using freqency of the outcome in the posterior predicted
+# scaled by number of samples
+for (i in 0:stan_data$n1)
+{
+  for (j in 0:stan_data$n2) 
+  {
+    match.preds <- sum(postpredk1==i & postpredk2==j)/nsamples
+    if (match.preds > 0)
+    {
+      points(i,j, pch=1, cex=sc*sqrt(match.preds)) 
+    }
+  }
+}
+```
+
 

@@ -1,0 +1,29 @@
+---
+title: "References"
+---
+
+### Sites
+[Stan](http://mc-stan.org)
+
+[Bayesplot](http://mc-stan.org/bayesplot/index.html)
+
+### Texts
+[Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan.](https://www.amazon.com/Doing-Bayesian-Data-Analysis-Second/dp/0124058884/ref=pd_sim_14_1?_encoding=UTF8&psc=1&refRID=3A4K3RC9C6EPMN7035CF)
+
+[Bayesian Data Analysis, Third Edition.](https://www.amazon.com/Bayesian-Analysis-Chapman-Statistical-Science/dp/1439840954/ref=pd_cp_14_2?_encoding=UTF8&psc=1&refRID=A5RBDSDVG3CCNTEC9TXG)
+
+[Bayesian Cognitive Modeling: A Practical Course.](https://www.amazon.com/Bayesian-Cognitive-Modeling-Practical-Course/dp/1107603579/ref=sr_1_1?ie=UTF8&qid=1512841826&sr=8-1&keywords=wagenmakers)
+
+[Probability Theory: The Logic of Science](https://www.amazon.com/Probability-Theory-Science-T-Jaynes/dp/0521592712/ref=sr_1_1?s=books&ie=UTF8&qid=1512841927&sr=1-1&keywords=jaynes+probability+theory)
+
+### Videos
+
+[Introduction to Bayesian Data Analysis and Stan with Andrew Gelman](https://www.youtube.com/watch?v=T1gYvX5c2sM)
+
+[Stan Hands-on with Bob Carpenter](https://www.youtube.com/watch?v=6NXRCtWQNMg)
+
+[Bayesian Inference and MCMC with Bob Carpenter](https://www.youtube.com/watch?v=qQFF4tPgeWI)
+
+[Precision as a goal for data collection - John Kruschke](https://www.youtube.com/watch?v=lh5btlAvrLs&list=PL_mlm7M63Y7j641Y7QJG3TfSxeZMGOsQ4)
+
+
