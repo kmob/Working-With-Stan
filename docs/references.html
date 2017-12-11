@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>References</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Working With Stan</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Summary</a>
+</li>
+<li>
+  <a href="one_source.html">One Process</a>
+</li>
+<li>
+  <a href="common_source.html">Common Process</a>
+</li>
+<li>
+  <a href="two_sources.html">Two Processes</a>
+</li>
+<li>
+  <a href="diag_details.html">Diagnostics</a>
+</li>
+<li>
+  <a href="references.html">References</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">References</h1>
+
+</div>
+
+
+<div id="sites" class="section level3">
+<h3>Sites</h3>
+<p><a href="http://mc-stan.org">Stan</a></p>
+<p><a href="http://mc-stan.org/bayesplot/index.html">Bayesplot</a></p>
+</div>
+<div id="texts" class="section level3">
+<h3>Texts</h3>
+<p><a href="https://github.com/stan-dev/stan/releases/download/v2.17.0/stan-reference-2.17.0.pdf">Stan Modeling Language: User’s Guide and Reference Manual</a></p>
+<p><a href="https://www.amazon.com/Doing-Bayesian-Data-Analysis-Second/dp/0124058884/ref=pd_sim_14_1?_encoding=UTF8&amp;psc=1&amp;refRID=3A4K3RC9C6EPMN7035CF">Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan.</a></p>
+<p><a href="https://www.amazon.com/Bayesian-Analysis-Chapman-Statistical-Science/dp/1439840954/ref=pd_cp_14_2?_encoding=UTF8&amp;psc=1&amp;refRID=A5RBDSDVG3CCNTEC9TXG">Bayesian Data Analysis, Third Edition.</a></p>
+<p><a href="https://www.amazon.com/Bayesian-Cognitive-Modeling-Practical-Course/dp/1107603579/ref=sr_1_1?ie=UTF8&amp;qid=1512841826&amp;sr=8-1&amp;keywords=wagenmakers">Bayesian Cognitive Modeling: A Practical Course.</a></p>
+<p><a href="https://www.amazon.com/Probability-Theory-Science-T-Jaynes/dp/0521592712/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1512841927&amp;sr=1-1&amp;keywords=jaynes+probability+theory">Probability Theory: The Logic of Science</a></p>
+<p><a href="http://psycnet.apa.org/record/1964-00040-001">Edwards, W., Lindman, H., &amp; Savage, L. J. (1963). Bayesian statistical inference for psychological research. Psychological Review, 70(3), 193-242</a></p>
+<p><a href="https://www.amazon.com/Press-Principles-Interaction-Programming-MIT/dp/0262201704/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1512842916&amp;sr=1-1&amp;keywords=thimbleby">Press On: Principles of Interaction Programming</a></p>
+</div>
+<div id="videos" class="section level3">
+<h3>Videos</h3>
+<p><a href="https://www.youtube.com/watch?v=T1gYvX5c2sM">Introduction to Bayesian Data Analysis and Stan with Andrew Gelman</a></p>
+<p><a href="https://www.youtube.com/watch?v=6NXRCtWQNMg">Stan Hands-on with Bob Carpenter</a></p>
+<p><a href="https://www.youtube.com/watch?v=qQFF4tPgeWI">Bayesian Inference and MCMC with Bob Carpenter</a></p>
+<p><a href="https://www.youtube.com/watch?v=lh5btlAvrLs&amp;list=PL_mlm7M63Y7j641Y7QJG3TfSxeZMGOsQ4">Precision as a goal for data collection - John Kruschke</a></p>
+</div>
+
+<p>Copyright &copy; 2017 OBrien Consulting - All rights reserved.</p>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

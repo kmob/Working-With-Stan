@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="date" content="2017-12-06" />
+
+<title>Bernoulli Trials - Common Process For Multiple Sources</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="site_libs/viz-0.3/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-0.9.2/grViz.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="styles.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 64px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+
+.section h2 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h3 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h4 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h5 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+.section h6 {
+  padding-top: 69px;
+  margin-top: -69px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Working With Stan</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Summary</a>
+</li>
+<li>
+  <a href="one_source.html">One Process</a>
+</li>
+<li>
+  <a href="two_sources.html">Two Processes</a>
+</li>
+<li>
+  <a href="common_source.html">Common Process</a>
+</li>
+<li>
+  <a href="diag_details.html">Diagnostics</a>
+</li>
+<li>
+  <a href="references.html">References</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Bernoulli Trials - Common Process For Multiple Sources</h1>
+<h4 class="date"><em>12/06/2017</em></h4>
+
+</div>
+
+
+<div id="the-data" class="section level2">
+<h2>The Data</h2>
+<p>Independent observations with two possible outcomes on a trial. And some characteristic that allows separating the trials into to groups. Imagine an underlying process difference that might account for differences in success (e.g., coins from different mints have a different bias).</p>
+<p>Simulate a data set <strong>data</strong> with <em>k</em> successes in <em>n</em> trials and <span class="math inline">\(\theta\)</span> processes. Start with 10 trials and a success rate of 90% for one group and 10% for the other.</p>
+<p>The <strong>data</strong> contains a single process with observations and a descriptive outcome label. One observation per row.</p>
+<pre><code>## # A tibble: 20 x 3
+##    process   obs outcome
+##      &lt;chr&gt; &lt;dbl&gt;   &lt;chr&gt;
+##  1 theta_2     0 failure
+##  2 theta_2     1 success
+##  3 theta_2     0 failure
+##  4 theta_2     0 failure
+##  5 theta_2     0 failure
+##  6 theta_2     0 failure
+##  7 theta_2     0 failure
+##  8 theta_2     0 failure
+##  9 theta_2     0 failure
+## 10 theta_2     0 failure
+## 11 theta_1     1 success
+## 12 theta_1     1 success
+## 13 theta_1     1 success
+## 14 theta_1     1 success
+## 15 theta_1     1 success
+## 16 theta_1     1 success
+## 17 theta_1     1 success
+## 18 theta_1     1 success
+## 19 theta_1     1 success
+## 20 theta_1     0 failure</code></pre>
+<p>Use <strong>class(data)</strong> to learn the class of the r object.</p>
+<pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<p>Use ggplot to generate a data graph showing successes, failures, and total observations. <img src="common_source_files/figure-html/visualize_data-1.png" width="480" /></p>
+<p>Stan needs summarized data ( <em>k</em> successes in <em>n</em> trials) in a list. Create the list <em>stan_data</em>.</p>
+<pre><code>## $n1
+## [1] 10
+## 
+## $k1
+## [1] 9
+## 
+## $n2
+## [1] 10
+## 
+## $k2
+## [1] 1</code></pre>
+<p>Use <strong>class(stan_data)</strong> to learn the class of the r object.</p>
+<pre><code>## [1] &quot;list&quot;</code></pre>
+</div>
+<div id="the-model" class="section level2">
+<h2>The Model</h2>
+<p>A graphical representation of the model shows:</p>
+<ul>
+<li>a continuous, unobserved “process” parameter <span class="math inline">\(\theta\)</span></li>
+<li>a discrete, observable number of successes <em>k</em></li>
+<li>a discrete, observable number of observations <em>n</em></li>
+</ul>
+<p>The vector’s arrow shows dependency. Successes are dependent on both the underlying process <span class="math inline">\(\theta\)</span> and the number of observations.</p>
+<p>The assumption for <span class="math inline">\(\theta\)</span> is that all possible rates are equally likely. The Beta distribution is set with 1 “success” and 1 “failure”.</p>
+<p>The assumption of <em>k</em> is that the outcomes are from a Binomial distribution with <span class="math inline">\(\theta\)</span> determining the rate for <em>n</em> observations.</p>
+<div id="htmlwidget-c521e9b3e73fceb2d0bc" style="width:400px;height:400px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c521e9b3e73fceb2d0bc">{"x":{"diagram":"\ndigraph boxes_and_circles {\n                    \n                    # graph statement\n                    graph [overlap=false, \n                    fontsize=12]\n                    \n                    # node statements\n                    node [shape=circle, \n                    color=black, \n                    style=filled, \n                    fillcolor=white, \n                    peripheries=1]\n                    t [ label=<&theta;>]\n                    \n                    node [shape=square, \n                    color=black, \n                    style=filled, \n                    fillcolor=grey, \n                    peripheries=1]\n                    k1 [label=<<I>k<SUB>1<\/SUB><\/I>>]\n                    k2 [label=<<I>k<SUB>2<\/SUB><\/I>>]\n                    n1 [label=<<I>n<SUB>1<\/SUB><\/I>>]\n                    n2 [label=<<I>n<SUB>2<\/SUB><\/I>>]\n\n                    node [shape = plain,\n                    color = black,\n                    style = filled,\n                    fillcolor = white,\n                    peripheries = 0]\n                    note_2 [label=<&theta; ~ Beta(1,1)>]\n                    note_4 [label=<<I>k<\/I><SUB>1 <\/SUB> ~ Binomial(&theta;,<I>n<\/I>)>]\n                    note_5 [label=<<I>k<\/I><SUB>2 <\/SUB> ~ Binomial(&theta;,<I>n<\/I>)>]\n                    \n                    subgraph {\n                    rank = same\n                    t\n                    note_2}\n                    \n                    subgraph {\n                    rank = same\n                    k1\n                    note_4\n                    note_5}\n                    \n                    # edge statements\n                    edge [arrowhead=vee,\n                    arrowtail=vee]\n                    t->k1\n                    t->k2\n                    k1->n1 [dir=back] \n                    k2->n2 [dir=back] \n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<p>The Stan model follows from the graphical model. The data block names <em>n</em> and <em>k</em> and sets lower boundaries. The parameters block names <span class="math inline">\(\theta\)</span> and sets upper and lower boundaries. The model block sets the prior distribution for <span class="math inline">\(\theta\)</span> and a model for <em>k1</em> and <em>k2</em>. The generated quantities block uses the model output to produce predicted sample for <em>k1</em> and <em>k2</em>.</p>
+<pre><code>## 
+## data { 
+##   int&lt;lower=1&gt; n1; 
+##   int&lt;lower=1&gt; n2; 
+##   int&lt;lower=0&gt; k1;
+##   int&lt;lower=0&gt; k2;
+## } 
+## parameters {
+##   real&lt;lower=0,upper=1&gt; theta;
+## } 
+## model {
+##   // Prior on Single Rate Theta
+##   theta ~ beta(1, 1);
+##   // Observed Counts
+##   k1 ~ binomial(n1, theta);
+##   k2 ~ binomial(n2, theta);
+## }
+## generated quantities {
+##   int&lt;lower=0,upper=n1&gt; postpredk1;
+##   int&lt;lower=0,upper=n2&gt; postpredk2;
+##   
+##   // Posterior Predictive
+##   postpredk1 = binomial_rng(n1, theta);
+##   postpredk2 = binomial_rng(n2, theta);
+## }</code></pre>
+</div>
+<div id="run-stan" class="section level2">
+<h2>Run Stan</h2>
+<blockquote>
+<p>“Run Stan with default settings and see what happens.”</p>
+</blockquote>
+<p>(Andrew Gelman said this and I’m taking him at his word!)</p>
+<p>Look at the object generated with <strong>class(samples_default)</strong>. The S4 object contains lots of information beyond the model results.</p>
+<pre><code>## [1] &quot;stanfit&quot;
+## attr(,&quot;package&quot;)
+## [1] &quot;rstan&quot;</code></pre>
+<p>And, simply running basic commands against the Stan object will produce reports and graphs specific to the class.</p>
+<div id="a-summary-table" class="section level4">
+<h4>A summary table:</h4>
+<pre><code>## Inference for Stan model: binomial_common_rates.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##              mean se_mean   sd   2.5%    25%    50%    75%  97.5% n_eff
+## theta        0.50    0.00 0.11   0.30   0.42   0.49   0.57   0.70  1334
+## postpredk1   4.95    0.04 1.88   1.00   4.00   5.00   6.00   8.03  2288
+## postpredk2   4.93    0.04 1.86   1.00   4.00   5.00   6.00   9.00  2480
+## lp__       -15.77    0.02 0.71 -17.73 -15.96 -15.50 -15.31 -15.25  1194
+##            Rhat
+## theta         1
+## postpredk1    1
+## postpredk2    1
+## lp__          1
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Dec  9 10:44:29 2017.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+</div>
+<div id="a-plot-of-parameters" class="section level4">
+<h4>A plot of parameters</h4>
+<pre><code>## ci_level: 0.8 (80% intervals)</code></pre>
+<pre><code>## outer_level: 0.95 (95% intervals)</code></pre>
+<p><img src="common_source_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+</div>
+</div>
+<div id="make-sense" class="section level2">
+<h2>Make Sense?</h2>
+<p>And, again, a plot of the data. <img src="common_source_files/figure-html/visualize_data_again-1.png" width="384" /></p>
+<p>See both together. <img src="common_source_files/figure-html/unnamed-chunk-4-1.png" width="384" /></p>
+</div>
+
+<p>Copyright &copy; 2017 OBrien Consulting - All rights reserved.</p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
