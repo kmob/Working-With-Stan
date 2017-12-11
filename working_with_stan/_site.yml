@@ -6,10 +6,10 @@ navbar:
     href: index.html
   - text: One Process
     href: one_source.html
-  - text: Two Processes
-    href: two_sources.html
   - text: Common Process
     href: common_source.html
+  - text: Two Processes
+    href: two_sources.html
   - text: Diagnostics
     href: diag_details.html
   - text: References
@@ -25,5 +25,5 @@ output:
     css: styles.css
     lib_dir: site_libs
     self_contained: no
-output_dir: "docs"
+output_dir: "../docs"
 
