@@ -2,12 +2,12 @@
 title: "References"
 ---
 
-### Sites
+## Sites
 [Stan](http://mc-stan.org)
 
 [Bayesplot](http://mc-stan.org/bayesplot/index.html)
 
-### Texts
+## Texts
 [Stan Modeling Language: User’s Guide and Reference Manual](https://github.com/stan-dev/stan/releases/download/v2.17.0/stan-reference-2.17.0.pdf)
 
 [Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan.](https://www.amazon.com/Doing-Bayesian-Data-Analysis-Second/dp/0124058884/ref=pd_sim_14_1?_encoding=UTF8&psc=1&refRID=3A4K3RC9C6EPMN7035CF)
@@ -22,7 +22,7 @@ title: "References"
 
 [Press On: Principles of Interaction Programming](https://www.amazon.com/Press-Principles-Interaction-Programming-MIT/dp/0262201704/ref=sr_1_1?s=books&ie=UTF8&qid=1512842916&sr=1-1&keywords=thimbleby)
 
-### Videos
+## Videos
 
 [Introduction to Bayesian Data Analysis and Stan with Andrew Gelman](https://www.youtube.com/watch?v=T1gYvX5c2sM)
 
@@ -32,7 +32,7 @@ title: "References"
 
 [Precision as a goal for data collection - John Kruschke](https://www.youtube.com/watch?v=lh5btlAvrLs&list=PL_mlm7M63Y7j641Y7QJG3TfSxeZMGOsQ4)
 
-### Building and Publishing R Markdown as a Website
+## Building and Publishing R Markdown as a Website
 
 [Building Website](http://rmarkdown.rstudio.com/rmarkdown_websites.html#overview)
 
