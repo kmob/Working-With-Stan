@@ -1,0 +1,8 @@
+---
+  title: "Diagnostics"
+---
+  
+### Diagnostic tools in Stan
+
+
+### Diagnostic tools in BayesPlot

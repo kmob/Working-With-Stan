@@ -1,0 +1,64 @@
+---
+title: "Summary"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/06/2017"
+params:
+  code_dir: src/
+  data_dir: ./data/
+  model_dir: model/
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(rstan)
+library(bayesplot)
+library(dplyr)
+library(feather)
+
+```
+
+## The Walk
+<div style="width:450px; height=300px">
+![Random](images/drunkard.png)
+</div>
+
+## The Normal Distribution
+<div style="width:450px; height=300px">
+![Normal](images/normal-distribution-probability.jpg)
+</div>
+
+All data is normally distributed... except when it isn't.
+
+## 0.05
+<div style="width:450px; height=300px">
+![p_value](images/Standard_deviation_diagram.png)
+</div>
+
+The p value tells all... except when it doesn't (and how did you get 846 degrees of freedom in your error term?).
+
+## Confidence Intervals
+<div style="width:450px; height=300px">
+![CI](images/Bell-curve-sm1.jpg)
+</div>
+
+NHST confidence intervals will clarify all... after two or three months of explaining NHST confidence intervals.
+
+## Continuous Variables
+
+All data is continuous... except when it isn't.
+
+## R. A. Fisher Says
+<div style="width:450px; height=300px">
+![Statistical Methods For Research Workers](images/statistical_methods_4.jpg)
+</div>
+
+What would Fisher do?

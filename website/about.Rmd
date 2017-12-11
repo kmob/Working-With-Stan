@@ -1,0 +1,15 @@
+---
+title: "About"
+---
+
+### Kevin O'Brien
+Ph.D., Experimental Psychology, University of Kansas
+
+Kevin has over 25 years experience providing human factors expertise in consumer computing, network administration, customer care systems , human resource and medical records systems, and on-line help.
+
+Prior to forming O’Brien Consulting, Kevin was a senior human factors engineer in the telecommunications industry (Pacific Bell) and aerospace industry (Lockheed Engineering & Sciences at Johnson Space Center).
+
+### [O'Brien Consulting](http://obrien-consulting.com)
+Founded in 1998 in Cupertino, California.
+
+Our business is human factors engineering - applying the science of human performance to the design of technology. Our methods shorten product development cycles, reduce user support & training, and improve user performance & satisfaction.

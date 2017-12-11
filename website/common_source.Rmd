@@ -1,0 +1,215 @@
+---
+title: "Bernoulli Trials - Common Process For Multiple Sources"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/06/2017"
+params:
+  code_dir: ../src/
+  data_dir: ../data/
+  model_dir: ../model/  
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(rstan)
+library(bayesplot)
+library(dplyr)
+library(feather)
+library(ggplot2)
+
+```
+## The Data
+
+Independent observations with two possible outcomes on a trial. And some characteristic that allows separating the trials into to groups. Imagine an underlying process difference that might account for differences in success (e.g., coins from different mints have a different bias).
+
+Simulate a data set __data__ with _k_ successes in _n_ trials and $\theta$ processes. Start with 10 trials and a success rate of 90% for one group and 10% for the other.
+
+The __data__ contains a single process with observations and a descriptive outcome label. One observation per row.
+```{r create_data, echo = FALSE, message = FALSE}
+
+##### Data #####
+data_name <- "two_rates"
+obs_ct <- 10
+rate_list <- c(0.9, 0.1)
+
+# Simulate Data
+source(paste(params$code_dir,"sim_data.r",sep = ""))
+data_file <- paste(params$data_dir, data_name, sep = "")
+sim_data(data_file, obs_ct, rate_list, "fixed")
+
+# Read Data
+data <- read_feather(paste(data_file, ".feather", sep = ""))
+print(data)
+
+```
+
+Use __class(data)__ to learn the class of the r object.
+```{r data_object}
+class(data)
+```
+
+Use ggplot to generate a data graph showing successes, failures, and total observations.
+```{r visualize_data}
+
+# Visualize Data
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
+```
+
+Stan needs summarized data ( _k_ successes in _n_ trials) in a list. Create the list *stan_data*.
+```{r data_to_list, echo = FALSE, message = FALSE}
+# Stan needs data in a list
+success_k1 <- data %>%
+  filter(outcome == 'success') %>%
+  filter(process == 'theta_1')
+success_k2 <- data %>%
+  filter(outcome == 'success') %>%
+  filter(process == 'theta_2')
+
+
+stan_data <- list(
+  n1 = nrow(data)/length(rate_list),
+  k1 = nrow(success_k1),
+  n2 = nrow(data)/length(rate_list),
+  k2 = nrow(success_k2)
+)
+  print(stan_data)
+```
+
+Use __class(stan_data)__ to learn the class of the r object.
+```{r stan_data_object}
+class(stan_data)
+```
+
+## The Model
+
+A graphical representation of the model shows:
+
+ * a continuous, unobserved "process" parameter $\theta$
+ * a discrete, observable number of successes *k*
+ * a discrete, observable number of observations *n*
+
+The vector's arrow shows dependency. Successes are dependent on both the underlying process $\theta$ and the number of observations. 
+
+The assumption for $\theta$ is that all possible rates are equally likely. The Beta distribution is set with 1 "success" and 1 "failure".
+
+The assumption of *k* is that the outcomes are from a Binomial distribution with $\theta$ determining the rate for *n* observations.
+
+```{r graphical_model, echo = FALSE, message = FALSE}
+# Visualize Model
+source(paste(params$code_dir,"gm_common_rates.r",sep = ""))
+gm_common_rates()
+```
+
+
+The Stan model follows from the graphical model.
+The data block names *n* and *k* and sets lower boundaries.
+The parameters block names $\theta$ and sets upper and lower boundaries. The model block sets the prior distribution for $\theta$ and a model for *k1* and *k2*. The generated quantities block uses the model output to produce predicted sample for *k1* and *k2*.
+```{r stan_model, echo = FALSE, message = FALSE}
+model = c(
+"
+data { 
+  int<lower=1> n1; 
+  int<lower=1> n2; 
+  int<lower=0> k1;
+  int<lower=0> k2;
+} 
+parameters {
+  real<lower=0,upper=1> theta;
+} 
+model {
+  // Prior on Single Rate Theta
+  theta ~ beta(1, 1);
+  // Observed Counts
+  k1 ~ binomial(n1, theta);
+  k2 ~ binomial(n2, theta);
+}
+generated quantities {
+  int<lower=0,upper=n1> postpredk1;
+  int<lower=0,upper=n2> postpredk2;
+  
+  // Posterior Predictive
+  postpredk1 = binomial_rng(n1, theta);
+  postpredk2 = binomial_rng(n2, theta);
+}
+")
+cat(model)
+```
+
+## Run Stan
+> "Run Stan with default settings and see what happens." 
+
+(Andrew Gelman said this and I'm taking him at his word!)
+```{r stan_set_up, message = FALSE, results = "hide", cache = TRUE}
+model_code <- paste(params$model_dir, "binomial_common_rates.stan", sep = "")
+# parameters to be monitored:  
+parameters <- c("theta1", "theta2")
+
+# Run Stan with defaults
+samples_default <- stan(file=model_code,
+                        data=stan_data,
+                        refresh = 0)
+```
+
+Look at the object generated with **class(samples_default)**. The S4 object contains lots of information beyond the model results. 
+```{r}
+class(samples_default)
+```
+
+And, simply running basic commands against the Stan object will produce reports and graphs specific to the class.
+
+#### A summary table:
+```{r}
+print(samples_default)
+```
+
+#### A plot of parameters
+```{r}
+plot(samples_default) 
+```
+
+## Make Sense?
+And, again, a plot of the data.
+```{r visualize_data_again, fig.width=4, fig.height=4}
+
+# Visualize Data
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
+```
+
+See both together.
+```{r, fig.width=4, fig.height=4}
+theta      <- rstan::extract(samples_default)$theta
+postpredk1 <- rstan::extract(samples_default)$postpredk1
+postpredk2 <- rstan::extract(samples_default)$postpredk2
+
+plot(stan_data$k1, stan_data$k2, 
+     type="p", pch=4, cex=2, lwd=2, 
+     xlab="Success - k1",
+     ylab="Success - k2", 
+     xlim=c(-1, stan_data$n1+1), 
+     ylim=c(-1, stan_data$n2+1))        
+nsamples <- length(theta)
+sc <- 10
+# add a symbol at each possible outcome of sets 1 and 2
+# size the symbol using freqency of the outcome in the posterior predicted
+# scaled by number of samples
+for (i in 0:stan_data$n1)
+{
+  for (j in 0:stan_data$n2) 
+  {
+    match.preds <- sum(postpredk1==i & postpredk2==j)/nsamples
+    if (match.preds > 0)
+    {
+      points(i,j, pch=1, cex=sc*sqrt(match.preds)) 
+    }
+  }
+}
+```
+
+

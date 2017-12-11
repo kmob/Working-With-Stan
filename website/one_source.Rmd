@@ -1,0 +1,169 @@
+---
+title: "Bernoulli Trials - One Process"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/06/2017"
+params:
+  code_dir: ../src/
+  data_dir: ../data/
+  model_dir: ../model/  
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(rstan)
+library(bayesplot)
+library(dplyr)
+library(feather)
+library(ggplot2)
+
+```
+## The Data
+
+Independent observations with two possible outcomes on a trial.
+
+Simulate a data set __data__ with _k_ successes in _n_ trials. Start with 10 trials and a success rate of 50%.
+
+The __data__ contains a single process with observations and a descriptive outcome label. One observation per row.
+```{r create_data, echo = FALSE, message = FALSE}
+
+##### Data #####
+data_name <- "one_rate"
+obs_ct <- 10
+rate_list <- c(0.5)
+
+# Simulate Data
+source(paste(params$code_dir,"sim_data.r",sep = ""))
+data_file <- paste(params$data_dir, data_name, sep = "")
+sim_data(data_file, obs_ct, rate_list, "fixed")
+
+# Read Data
+data <- read_feather(paste(data_file, ".feather", sep = ""))
+print(data)
+
+```
+
+Use __class(data)__ to learn the class of the r object.
+```{r data_object}
+class(data)
+```
+
+Use ggplot to generate a data graph showing successes, failures, and total observations.
+```{r visualize_data}
+
+# Visualize Data
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
+```
+
+Stan needs summarized data ( _k_ successes in _n_ trials) in a list. Create the list *stan_data*.
+```{r data_to_list, echo = FALSE, message = FALSE}
+# Stan needs data in a list
+  success_data <- data %>%
+    dplyr::filter(outcome == 'success')
+  
+  stan_data <- list(
+    n = nrow(data),
+    k = nrow(success_data)
+  )
+  print(stan_data)
+```
+
+Use __class(stan_data)__ to learn the class of the r object.
+```{r stan_data_object}
+class(stan_data)
+```
+
+## The Model
+
+A graphical representation of the model shows:
+
+ * a continuous, unobserved "process" parameter $\theta$
+ * a discrete, observable number of successes *k*
+ * a discrete, observable number of observations *n*
+
+The vector's arrow shows dependency. Successes are dependent on both the underlying process $\theta$ and the number of observations.
+
+The assumption for $\theta$ is that all possible rates are equally likely. The Beta distribution is set with 1 "success" and 1 "failure".
+
+The assumption of *k* is that the outcomes are from a Binomial distribution with $\theta$ determining the rate for *n* observations.
+
+```{r graphical_model, echo = FALSE, message = FALSE}
+# Visualize Model
+source(paste(params$code_dir,"gm_binary_process.r",sep = ""))
+gm_binary_process()
+```
+
+
+The Stan model follows from the graphical model.
+The data block names *n* and *k* and sets lower boundaries.
+The parameters block names $\theta$ and sets upper and lower boundaries.
+The model block sets the prior distribution for $\theta$ and the model for *k*.
+```{r stan_model, echo = FALSE, message = FALSE}
+model = c(
+"data {
+  int<lower=1> n; // at least one observation
+  int<lower=0> k; // success count can not be negative
+}
+
+parameters {
+  real<lower=0, upper=1> theta; // bounded by 0 and 1
+}
+
+model {
+  //Prior Distribution for Rate Theta
+  theta ~ beta(1, 1);
+  
+  // Observed Counts
+  // k has a binomial distribution of n observations 
+  // with theta variation
+  k ~ binomial(n, theta);
+
+}
+")
+cat(model)
+```
+
+## Run Stan
+> "Run Stan with default settings and see what happens." 
+
+(Andrew Gelman said this and I'm taking him at his word!)
+```{r stan_set_up, message = FALSE, results = "hide", cache = TRUE}
+model_code <- paste(params$model_dir, "binomial_one_rate.stan", sep = "")
+parameters <- c("theta")
+# Run Stan with defaults
+samples_default <- stan(file=model_code,
+                        data=stan_data,
+                        refresh = 0)
+```
+
+Look at the object generated with **class(samples_default)**. The S4 object contains lots of information beyond the model results. 
+```{r}
+class(samples_default)
+```
+
+And, simply running basic commands against the Stan object will produce reports and graphs specific to the class.
+
+A summary table:
+```{r}
+print(samples_default)
+```
+
+A plot of $\theta$
+```{r}
+plot(samples_default) 
+```
+
+And a better plot of $\theta$
+```{r bayesplot, echo = FALSE, message = FALSE}
+source(paste(params$code_dir,"post_density_bayesplot.r",sep = ""))
+g <- post_density_bayesplot(samples_default, parameters, 0.8, "mean")
+g 
+```
+
