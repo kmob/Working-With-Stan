@@ -1,5 +1,15 @@
 ---
 title: "References"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/06/2017"
 ---
 
 ## Sites
@@ -32,7 +42,7 @@ title: "References"
 
 [Precision as a goal for data collection - John Kruschke](https://www.youtube.com/watch?v=lh5btlAvrLs&list=PL_mlm7M63Y7j641Y7QJG3TfSxeZMGOsQ4)
 
-## Building and Publishing R Markdown as a Website
+## R Markdown Website
 
 [Building Website](http://rmarkdown.rstudio.com/rmarkdown_websites.html#overview)
 
