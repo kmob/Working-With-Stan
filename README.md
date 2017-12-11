@@ -25,4 +25,4 @@ Workflow and examples for getting started with Stan. The content of the website 
 
 * O'Brien Consulting, Inc 
 * Human Factors | Useful Software | Usable Software
-* obrien-consulting.com | kevin@obrien-consulting.com
+* [obrien-consulting.com](http://obrien-consulting.com) | kevin@obrien-consulting.com
