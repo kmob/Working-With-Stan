@@ -326,72 +326,15 @@ div.tocify {
 </div>
 
 
-<div id="the-data-one-process" class="section level2">
-<h2>The Data: One Process</h2>
+<div id="a-data-set-model" class="section level2">
+<h2>A Data Set &amp; Model</h2>
+<div id="the-data" class="section level4">
+<h4>The Data</h4>
 <p>Independent observations with two possible outcomes on a trial.</p>
-<pre><code>## In file included from file17ef7d0cfd02.cpp:8:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/src/stan/model/model_header.hpp:4:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/stan/math.hpp:4:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/stan/math/rev/mat.hpp:4:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/stan/math/rev/core.hpp:12:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/stan/math/rev/core/gevv_vvv_vari.hpp:5:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/StanHeaders/include/stan/math/rev/core/var.hpp:7:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/BH/include/boost/math/tools/config.hpp:13:
-## In file included from /Library/Frameworks/R.framework/Versions/3.3/Resources/library/BH/include/boost/config.hpp:39:
-## /Library/Frameworks/R.framework/Versions/3.3/Resources/library/BH/include/boost/config/compiler/clang.hpp:200:11: warning: &#39;BOOST_NO_CXX11_RVALUE_REFERENCES&#39; macro redefined [-Wmacro-redefined]
-## #  define BOOST_NO_CXX11_RVALUE_REFERENCES
-##           ^
-## &lt;command line&gt;:6:9: note: previous definition is here
-## #define BOOST_NO_CXX11_RVALUE_REFERENCES 1
-##         ^
-## 1 warning generated.
-## 
-## Gradient evaluation took 1.1e-05 seconds
-## 1000 transitions using 10 leapfrog steps per transition would take 0.11 seconds.
-## Adjust your expectations accordingly!
-## 
-## 
-## 
-##  Elapsed Time: 0.014303 seconds (Warm-up)
-##                0.012346 seconds (Sampling)
-##                0.026649 seconds (Total)
-## 
-## 
-## Gradient evaluation took 4e-06 seconds
-## 1000 transitions using 10 leapfrog steps per transition would take 0.04 seconds.
-## Adjust your expectations accordingly!
-## 
-## 
-## 
-##  Elapsed Time: 0.010302 seconds (Warm-up)
-##                0.013932 seconds (Sampling)
-##                0.024234 seconds (Total)
-## 
-## 
-## Gradient evaluation took 3e-06 seconds
-## 1000 transitions using 10 leapfrog steps per transition would take 0.03 seconds.
-## Adjust your expectations accordingly!
-## 
-## 
-## 
-##  Elapsed Time: 0.011496 seconds (Warm-up)
-##                0.013336 seconds (Sampling)
-##                0.024832 seconds (Total)
-## 
-## 
-## Gradient evaluation took 5e-06 seconds
-## 1000 transitions using 10 leapfrog steps per transition would take 0.05 seconds.
-## Adjust your expectations accordingly!
-## 
-## 
-## 
-##  Elapsed Time: 0.010709 seconds (Warm-up)
-##                0.011854 seconds (Sampling)
-##                0.022563 seconds (Total)</code></pre>
 <p>Use ggplot to generate a data graph showing successes, failures, and total observations. <img src="diag_details_files/figure-html/visualize_data-1.png" width="480" /></p>
 </div>
-<div id="the-model" class="section level2">
-<h2>The Model</h2>
+<div id="the-model" class="section level4">
+<h4>The Model</h4>
 <p>A graphical representation of the model shows:</p>
 <ul>
 <li>a continuous, unobserved “process” parameter <span class="math inline">\(\theta\)</span></li>
@@ -401,10 +344,14 @@ div.tocify {
 <p>The vector’s arrow shows dependency. Successes are dependent on both the underlying process <span class="math inline">\(\theta\)</span> and the number of observations.</p>
 <p>The assumption for <span class="math inline">\(\theta\)</span> is that all possible rates are equally likely. The Beta distribution is set with 1 “success” and 1 “failure”.</p>
 <p>The assumption of <em>k</em> is that the outcomes are from a Binomial distribution with <span class="math inline">\(\theta\)</span> determining the rate for <em>n</em> observations.</p>
-<p><div id="htmlwidget-42a2990c439a8723d414" style="width:200px;height:200px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-42a2990c439a8723d414">{"x":{"diagram":"\n    digraph boxes_and_circles {\n    \n    # graph statement\n    graph [overlap=false, fontsize=10]\n    \n    # node statements\n    node [shape=circle,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=1]\n    t [ label=<&theta;>]\n    \n    node [shape=square,\n    color=black,\n    style=filled,\n    fillcolor=grey,\n    peripheries=1]\n    k [label=<<I>k<\/I>>]\n    n [label=<<I>n<\/I>>]\n    \n    node [shape=plain,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=0]\n    note_1 [label=<&theta; ~ Beta(1,1)>]\n    note_2 [label=<<I>k <\/I> ~ Binomial(&theta;,<I>n<\/I>)>]\n    \n    subgraph {\n    rank = same; t; note_1;\n    }\n    \n    subgraph {\n    rank = same; k; note_2;\n    }\n    \n    # edge statements\n    edge [arrowhead=vee,arrowtail=vee]\n    t->k\n    k->n [dir=back]\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script> ### Basic Stan Output</p>
-<p>Info from a S4 object of class <a href="https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html">stanfit</a></p>
-<p>Use get_stancode to extract the model from the stan output</p>
+<div id="htmlwidget-9f241be353b46c816a62" style="width:200px;height:200px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9f241be353b46c816a62">{"x":{"diagram":"\n    digraph boxes_and_circles {\n    \n    # graph statement\n    graph [overlap=false, fontsize=10]\n    \n    # node statements\n    node [shape=circle,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=1]\n    t [ label=<&theta;>]\n    \n    node [shape=square,\n    color=black,\n    style=filled,\n    fillcolor=grey,\n    peripheries=1]\n    k [label=<<I>k<\/I>>]\n    n [label=<<I>n<\/I>>]\n    \n    node [shape=plain,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=0]\n    note_1 [label=<&theta; ~ Beta(1,1)>]\n    note_2 [label=<<I>k <\/I> ~ Binomial(&theta;,<I>n<\/I>)>]\n    \n    subgraph {\n    rank = same; t; note_1;\n    }\n    \n    subgraph {\n    rank = same; k; note_2;\n    }\n    \n    # edge statements\n    edge [arrowhead=vee,arrowtail=vee]\n    t->k\n    k->n [dir=back]\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="basic-stan-output" class="section level2">
+<h2>Basic Stan Output</h2>
+<p>Extract information from a S4 object of class <a href="https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html">stanfit</a>.</p>
+<p>Use get_stancode to extract the model from the stan output.</p>
 <pre><code>## // Infering a Rate &quot;theta&quot; of a binary process
 ## // Section 3.1 
 ## // Figure 3.2
@@ -425,7 +372,7 @@ div.tocify {
 ##   // k has a binomial distribution of n observations with theta variation
 ##   k ~ binomial(n, theta);
 ## }</code></pre>
-<p>Print on a stanfit object shows summary of parameter and log-posterior (lp__) posterior mean, posterior standard deviation, and quantiles:</p>
+<p>Print on a stanfit object shows summary of the model fit:</p>
 <ul>
 <li>first parameter is “theta”</li>
 <li>second parameter is “lp__&quot; - the log posterior density</li>
@@ -439,52 +386,38 @@ div.tocify {
 ## post-warmup draws per chain=1000, total post-warmup draws=4000.
 ## 
 ##        mean se_mean   sd   2.5%   25%   50%   75% 97.5% n_eff Rhat
-## theta  0.58    0.00 0.14   0.30  0.48  0.58  0.68  0.83  1648    1
-## lp__  -8.67    0.02 0.74 -10.81 -8.82 -8.39 -8.20 -8.15  1725    1
+## theta  0.58    0.00 0.14   0.30  0.48  0.59  0.68  0.83  1281    1
+## lp__  -8.69    0.02 0.78 -10.86 -8.88 -8.40 -8.21 -8.15  1738    1
 ## 
-## Samples were drawn using NUTS(diag_e) at Sat Dec 16 12:27:32 2017.
+## Samples were drawn using NUTS(diag_e) at Sat Dec 16 12:36:37 2017.
 ## For each parameter, n_eff is a crude measure of effective sample size,
 ## and Rhat is the potential scale reduction factor on split chains (at 
 ## convergence, Rhat=1).</code></pre>
-<div id="diagnostics" class="section level3">
-<h3>Diagnostics</h3>
-<div id="rhat---potential-scale-reduction-statistic" class="section level4">
-<h4>Rhat - potential scale reduction statistic</h4>
+</div>
+<div id="diagnostics" class="section level2">
+<h2>Diagnostics</h2>
+<div id="rhat---potential-scale-reduction-statistic" class="section level3">
+<h3>Rhat - potential scale reduction statistic</h3>
 <p>If chains are at equilibrium, rhat will be 1. If the chains have not converged rhat will be greater than one.</p>
 <p><img src="diag_details_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
 </div>
-<div id="neff_ratio---look-at-effective-sample-size" class="section level4">
-<h4>neff_ratio - Look at effective sample size</h4>
+<div id="neff_ratio---look-at-effective-sample-size" class="section level3">
+<h3>neff_ratio - Look at effective sample size</h3>
 <p>Draws in a Markov chain are not independent if there is autocorrelation. If there is autocorrelation, the effective sample size will be smaller than the total sample size, N.</p>
 <p>The larger the ratio of neff to N the better.</p>
-<pre><code>##     theta      lp__ 
-## 0.4120353 0.4313311</code></pre>
 <p><img src="diag_details_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
 </div>
-<div id="mcmc_acf---autocorrelation---centered-parameterization-cp" class="section level4">
-<h4>mcmc_acf - Autocorrelation - centered parameterization (CP)</h4>
+<div id="mcmc_acf---autocorrelation-function" class="section level3">
+<h3>mcmc_acf - Autocorrelation Function</h3>
 <p>View autocorrelation for each Markov chain separately up to a specified number of lags.</p>
 <p>Lag - the distance between successive samples.</p>
-<p>The autocorrelation function (ACF) relates correlation and lag. The values of the ACF should quickly decrease with increasing lag. ACFs that do not decrease quickly with lag often indicate that the sampler is not exploring the posterior distribution efficiently and result in increased R^ values and decreased Neff values. (See <a href="https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf">Bayesian inference with Stan: A tutorial on adding custom distributions</a> <img src="diag_details_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
+<p>The autocorrelation function (ACF) relates correlation and lag. The values of the ACF should quickly decrease with increasing lag. ACFs that do not decrease quickly with lag often indicate that the sampler is not exploring the posterior distribution efficiently and result in increased R^ values and decreased Neff values. (See <a href="https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf">Bayesian inference with Stan: A tutorial on adding custom distributions</a>).</p>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-5-1.png" width="384" /></p>
 </div>
-<div id="evaluate-nuts-sampler" class="section level4">
-<h4>Evaluate NUTS sampler</h4>
-<p>Extract the log posterior over iterations. Extract iterations with divergence.</p>
+<div id="evaluate-nuts-sampler" class="section level3">
+<h3>Evaluate NUTS sampler</h3>
+<p>Extract the log posterior (i.e., log_posterior(samples) ) and iterations with divergence (i.e., nuts_params(samples) ) from the stan output.</p>
 <p>Trace plot of MCMC draws and divergence, if any, for NUTS.</p>
-<pre><code>##   Iteration     Value Chain
-## 1         1 -8.360693     1
-## 2         2 -8.196771     1
-## 3         3 -9.723596     1
-## 4         4 -8.314626     1
-## 5         5 -9.895314     1
-## 6         6 -9.122828     1</code></pre>
-<pre><code>##   Iteration     Parameter     Value Chain
-## 1         1 accept_stat__ 0.9447556     1
-## 2         2 accept_stat__ 1.0000000     1
-## 3         3 accept_stat__ 0.6408017     1
-## 4         4 accept_stat__ 1.0000000     1
-## 5         5 accept_stat__ 0.3673829     1
-## 6         6 accept_stat__ 1.0000000     1</code></pre>
 <pre><code>## No divergences to plot.</code></pre>
 <p><img src="diag_details_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
 <div id="a-different-look-at-divergence." class="section level5">
@@ -493,68 +426,76 @@ div.tocify {
 <p><img src="diag_details_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
 </div>
 </div>
-<div id="other-diagnostics-graphs" class="section level4">
-<h4>Other Diagnostics &amp; Graphs</h4>
-<p>A more detailed summary.</p>
+</div>
+<div id="other-diagnostics-graphs" class="section level2">
+<h2>Other Diagnostics &amp; Graphs</h2>
+<p>A more detailed summary using the summary() function.</p>
 <pre><code>## $summary
 ##             mean     se_mean        sd        2.5%        25%        50%
-## theta  0.5773151 0.003378536 0.1371595   0.2993314  0.4832189  0.5783767
-## lp__  -8.6726841 0.017885551 0.7429125 -10.8128021 -8.8245552 -8.3932704
+## theta  0.5799059 0.003901466 0.1396456   0.2990563  0.4825571  0.5862972
+## lp__  -8.6939063 0.018687798 0.7791654 -10.8626288 -8.8791850 -8.4005691
 ##              75%      97.5%    n_eff     Rhat
-## theta  0.6793896  0.8303485 1648.141 1.000708
-## lp__  -8.2023916 -8.1510614 1725.324 1.000807
+## theta  0.6813911  0.8339296 1281.147 1.004059
+## lp__  -8.2063674 -8.1509108 1738.373 1.001246
 ## 
 ## $c_summary
 ## , , chains = chain:1
 ## 
 ##          stats
-## parameter       mean        sd        2.5%       25%        50%        75%
-##     theta  0.5663588 0.1419428   0.2922506  0.467130  0.5690747  0.6719294
-##     lp__  -8.7118830 0.7852922 -10.8394255 -8.872874 -8.4046407 -8.2132009
+## parameter       mean        sd        2.5%        25%       50%        75%
+##     theta  0.5825189 0.1330357   0.3225311  0.4926727  0.589468  0.6732102
+##     lp__  -8.6404990 0.7498039 -10.4428005 -8.8192743 -8.352550 -8.1971973
 ##          stats
-## parameter      97.5%
-##     theta  0.8330117
-##     lp__  -8.1513747
+## parameter     97.5%
+##     theta  0.820949
+##     lp__  -8.150525
 ## 
 ## , , chains = chain:2
 ## 
 ##          stats
-## parameter       mean        sd        2.5%        25%        50%
-##     theta  0.5839208 0.1364415   0.2956341  0.4962677  0.5870431
-##     lp__  -8.6732204 0.7852458 -11.1709338 -8.7904591 -8.3884646
+## parameter       mean        sd       2.5%        25%        50%        75%
+##     theta  0.5722978 0.1417743   0.279753  0.4734228  0.5796229  0.6756787
+##     lp__  -8.7065085 0.7814133 -10.907407 -8.8882874 -8.4139222 -8.2092875
 ##          stats
-## parameter        75%      97.5%
-##     theta  0.6859116  0.8329932
-##     lp__  -8.1950169 -8.1507644
+## parameter      97.5%
+##     theta  0.8325598
+##     lp__  -8.1511338
 ## 
 ## , , chains = chain:3
 ## 
 ##          stats
-## parameter       mean        sd        2.5%        25%        50%       75%
-##     theta  0.5772236 0.1334808   0.3125112  0.4822294  0.5804903  0.674813
-##     lp__  -8.6407682 0.6920058 -10.5854223 -8.7917958 -8.3807140 -8.199014
+## parameter       mean       sd        2.5%       25%       50%        75%
+##     theta  0.5774489 0.138483   0.2964121  0.477725  0.583742  0.6772734
+##     lp__  -8.6824826 0.745806 -10.8626288 -8.838242 -8.400059 -8.2101127
 ##          stats
-## parameter      97.5%
-##     theta  0.8246271
-##     lp__  -8.1510024
+## parameter     97.5%
+##     theta  0.835351
+##     lp__  -8.151059
 ## 
 ## , , chains = chain:4
 ## 
 ##          stats
 ## parameter       mean        sd        2.5%        25%        50%
-##     theta  0.5817572 0.1361712   0.3057664  0.4896599  0.5783317
-##     lp__  -8.6648648 0.7032406 -10.7775608 -8.8603567 -8.3929534
+##     theta  0.5873577 0.1447749   0.3059745  0.4852965  0.5919105
+##     lp__  -8.7461351 0.8338485 -10.9892909 -8.9576793 -8.4321885
 ##          stats
 ## parameter        75%      97.5%
-##     theta  0.6849353  0.8333689
-##     lp__  -8.2023793 -8.1515106</code></pre>
+##     theta  0.6898992  0.8406215
+##     lp__  -8.2110721 -8.1510385</code></pre>
+<div id="other-functions-to-run-on-stanfit-object" class="section level4">
+<h4>Other Functions to run on stanfit object</h4>
+<ul>
+<li>stan_trace(samples)</li>
+<li>stan_hist(samples)</li>
+<li>stan_dens(samples)</li>
+<li>stan_scat(samples)</li>
+<li>stan_diag(samples)</li>
+<li>stan_rhat(samples)</li>
+<li>stan_ess(samples)</li>
+<li>stan_mcse(samples)</li>
+<li>stan_ac(samples)</li>
+</ul>
 </div>
-</div>
-</div>
-<div id="point-estimate-and-variability-2-levels" class="section level1">
-<h1>point estimate and variability 2 levels</h1>
-<p>stan_trace(samples) stan_hist(samples) stan_dens(samples) stan_scat(samples) stan_diag(samples) stan_rhat(samples) stan_ess(samples) stan_mcse(samples) stan_ac(samples)</p>
-<p>as.array(samples)[1:15,,2] # array: sample, chain, parameter</p>
 </div>
 
 <p>Copyright &copy; 2017 OBrien Consulting - All rights reserved.</p>

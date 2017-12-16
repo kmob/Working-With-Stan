@@ -27,8 +27,9 @@ library(ggplot2)
 
 ```
 
-## The Data: One Process
+## A Data Set & Model
 
+#### The Data
 Independent observations with two possible outcomes on a trial.
 
 ```{r create_data, message = FALSE, results = "hide", cache = TRUE}
@@ -63,7 +64,7 @@ Use ggplot to generate a data graph showing successes, failures, and total obser
 ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 ```
 
-## The Model
+#### The Model
 
 A graphical representation of the model shows:
 
@@ -82,18 +83,19 @@ The assumption of *k* is that the outcomes are from a Binomial distribution with
 source(paste(params$code_dir,"gm_binary_process.r",sep = ""))
 gm_binary_process()
 ```
-### Basic Stan Output
 
-Info from a S4 object of class [stanfit](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html)
+## Basic Stan Output
 
-Use get_stancode to extract the model from the stan output
+Extract information from a S4 object of class [stanfit](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html).
+
+Use get_stancode to extract the model from the stan output.
 ```{r}
 # get_stancode extracts the model
 stan_model <- get_stancode(samples)
 cat(stan_model)
 ```
 
-Print on a stanfit object shows summary of parameter and log-posterior (lp__) posterior mean, posterior standard deviation, and quantiles:
+Print on a stanfit object shows summary of the model fit:
 
 * first parameter is "theta"
 * second parameter is "lp__" - the log posterior density 
@@ -108,9 +110,9 @@ Convergence of log posterior density is critical to declaring convergence (see s
 print(samples)  # a rough summary
 ```
 
-### Diagnostics 
+## Diagnostics 
 
-#### Rhat - potential scale reduction statistic
+### Rhat - potential scale reduction statistic
 If chains are at equilibrium, rhat will be 1. 
 If the chains have not converged rhat will be greater than one.
 
@@ -122,7 +124,7 @@ mcmc_rhat(rhats) + yaxis_text(hjust = 1)
 
 
 
-#### neff_ratio - Look at effective sample size
+### neff_ratio - Look at effective sample size
 Draws in a Markov chain are not independent if there is autocorrelation. If there is autocorrelation, the effective sample size will be smaller than the total sample size, N. 
 
 The larger the ratio of neff to N the better.
@@ -133,18 +135,20 @@ mcmc_neff(ratios_cp, size = 2)
 ```
 
 
-#### mcmc_acf - Autocorrelation - centered parameterization (CP)
+### mcmc_acf - Autocorrelation Function
 View autocorrelation for each Markov chain separately up to a specified number of lags.
 
 Lag - the distance between successive samples.
 
 The autocorrelation function (ACF) relates correlation and lag. The values of the ACF should quickly decrease with increasing lag. ACFs that do not decrease quickly with lag often indicate that the sampler is not exploring the posterior distribution efficiently and result in increased R^ values and decreased Neff values. (See [Bayesian inference with Stan: A tutorial on adding custom distributions](https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf)).
+
+
 ```{r, fig.width=4, fig.height=4}
 posterior_cp <- as.array(samples)
 mcmc_acf(posterior_cp, pars = parameters, lags = 10)
 ```
 
-#### Evaluate NUTS sampler
+### Evaluate NUTS sampler
 Extract the log posterior (i.e., log_posterior(samples) ) and iterations with divergence (i.e., nuts_params(samples) ) from the stan output. 
 
 Trace plot of MCMC draws and divergence, if any, for NUTS.
@@ -169,26 +173,25 @@ mcmc_nuts_divergence(np_cp, lp_cp)
 
 
 
-#### Other Diagnostics & Graphs
+## Other Diagnostics & Graphs
 
-A more detailed summary.
+A more detailed summary using the summary() function.
 ```{r}
 print(summary(samples))  
 ```
 
+#### Other Functions to run on stanfit object
 
-#point estimate and variability 2 levels
-stan_trace(samples)
-stan_hist(samples)
-stan_dens(samples)
-stan_scat(samples)
-stan_diag(samples)
-stan_rhat(samples)
-stan_ess(samples)
-stan_mcse(samples)
-stan_ac(samples)
+ * stan_trace(samples)
+ * stan_hist(samples)
+ * stan_dens(samples)
+ * stan_scat(samples)
+ * stan_diag(samples)
+ * stan_rhat(samples)
+ * stan_ess(samples)
+ * stan_mcse(samples)
+ * stan_ac(samples)
 
-as.array(samples)[1:15,,2]  # array: sample, chain, parameter 
 
 
 
