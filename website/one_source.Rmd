@@ -35,7 +35,7 @@ The __data__ contains a single process with observations and a descriptive outco
 ```{r create_data, echo = FALSE, message = FALSE}
 
 ##### Data #####
-data_name <- "one_rate"
+data_name <- "one_process"
 obs_ct <- 10
 rate_list <- c(0.5)
 

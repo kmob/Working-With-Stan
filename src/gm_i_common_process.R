@@ -1,7 +1,7 @@
 # graphical model
 # binary process
 
-gm_i_common_rates <- function() {
+gm_i_common_process <- function() {
   library(DiagrammeR)
   
   diagram_spec <- c("

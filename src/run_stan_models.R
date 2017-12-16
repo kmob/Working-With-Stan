@@ -17,19 +17,19 @@ source(paste(code_dir,"post_density_bayesplot.r",sep = ""))
 ##### What to run ####
 ## how many observations per group
 obs_ct <- 10
-## one or two processes and the simulated process rates
-### Data for one process
-# data_name <- "one_process"
-# rate_list <- c(0.6)
-### Data for two processes
-data_name <- "two_process"
-rate_list <- c(0.6, 0.5)
+##-- one or two processes and the simulated process rates --##
+### Data for one process ###
+data_name <- "one_process"
+rate_list <- c(0.6)
+### Data for two processes ###
+# data_name <- "two_process"
+# rate_list <- c(0.6, 0.5)
 
 ## current models are: 
-# one_rate (Graphical Model with one process)
-# common_rate (Graphical Model with one process and two outcome groups)
-# two_rates (Graphical Model with two processes and a difference process)
-binomial_model <- "two_rates"
+# one_process (Graphical Model with one process)
+# common_process (Graphical Model with one process and two outcome groups)
+# two_process (Graphical Model with two processes and a difference process)
+binomial_model <- "two_process"
 
 ###################################################################
 
@@ -69,19 +69,19 @@ ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
 
 #### Model & Parameters ####
 
-if (binomial_model == "one_rate") {
+if (binomial_model == "one_process") {
   model_code <- paste(model_dir, "binomial_one_rate.stan", sep = "")
   source(paste(code_dir,"gm_binary_process.r",sep = ""))
   graphical_model <- gm_binary_process()
   parameters <- c("theta")
-} else if (binomial_model == "common_rate") {
+} else if (binomial_model == "common_process") {
   model_code <- paste(model_dir, "binomial_common_rates.stan", sep = "")
-  source(paste(code_dir,"gm_common_rates.r",sep = ""))
+  source(paste(code_dir,"gm_common_process.r",sep = ""))
   graphical_model <- gm_common_rates()
   parameters <- c("theta")
-} else if (binomial_model == "two_rates") {
+} else if (binomial_model == "two_process") {
   model_code <- paste(model_dir, "binomial_two_rates.stan", sep = "")
-  source(paste(code_dir,"gm_two_rates.r",sep = ""))
+  source(paste(code_dir,"gm_two_process.r",sep = ""))
   graphical_model <- gm_two_rates()
   parameters <- c("theta1", "theta2", "delta")
 }

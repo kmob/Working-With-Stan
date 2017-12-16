@@ -10,6 +10,7 @@
 
 
 
+<meta name="date" content="2017-12-16" />
 
 <title>Diagnostics</title>
 
@@ -19,9 +20,16 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="site_libs/viz-0.3/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-0.9.2/grViz.js"></script>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -164,6 +172,107 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = false;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -212,20 +321,188 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Diagnostics</h1>
+<h4 class="date"><em>12/16/2017</em></h4>
 
 </div>
 
 
-<div id="diagnostic-tools-in-stan" class="section level3">
-<h3>Diagnostic tools in Stan</h3>
+<div id="a-data-set-model" class="section level2">
+<h2>A Data Set &amp; Model</h2>
+<div id="the-data" class="section level4">
+<h4>The Data</h4>
+<p>Independent observations with two possible outcomes on a trial.</p>
+<p>Use ggplot to generate a data graph showing successes, failures, and total observations. <img src="diag_details_files/figure-html/visualize_data-1.png" width="480" /></p>
 </div>
-<div id="diagnostic-tools-in-bayesplot" class="section level3">
-<h3>Diagnostic tools in BayesPlot</h3>
+<div id="the-model" class="section level4">
+<h4>The Model</h4>
+<p>A graphical representation of the model shows:</p>
+<ul>
+<li>a continuous, unobserved “process” parameter <span class="math inline">\(\theta\)</span></li>
+<li>a discrete, observable number of successes <em>k</em></li>
+<li>a discrete, observable number of observations <em>n</em></li>
+</ul>
+<p>The vector’s arrow shows dependency. Successes are dependent on both the underlying process <span class="math inline">\(\theta\)</span> and the number of observations.</p>
+<p>The assumption for <span class="math inline">\(\theta\)</span> is that all possible rates are equally likely. The Beta distribution is set with 1 “success” and 1 “failure”.</p>
+<p>The assumption of <em>k</em> is that the outcomes are from a Binomial distribution with <span class="math inline">\(\theta\)</span> determining the rate for <em>n</em> observations.</p>
+<div id="htmlwidget-9f241be353b46c816a62" style="width:200px;height:200px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-9f241be353b46c816a62">{"x":{"diagram":"\n    digraph boxes_and_circles {\n    \n    # graph statement\n    graph [overlap=false, fontsize=10]\n    \n    # node statements\n    node [shape=circle,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=1]\n    t [ label=<&theta;>]\n    \n    node [shape=square,\n    color=black,\n    style=filled,\n    fillcolor=grey,\n    peripheries=1]\n    k [label=<<I>k<\/I>>]\n    n [label=<<I>n<\/I>>]\n    \n    node [shape=plain,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=0]\n    note_1 [label=<&theta; ~ Beta(1,1)>]\n    note_2 [label=<<I>k <\/I> ~ Binomial(&theta;,<I>n<\/I>)>]\n    \n    subgraph {\n    rank = same; t; note_1;\n    }\n    \n    subgraph {\n    rank = same; k; note_2;\n    }\n    \n    # edge statements\n    edge [arrowhead=vee,arrowtail=vee]\n    t->k\n    k->n [dir=back]\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<div id="basic-stan-output" class="section level2">
+<h2>Basic Stan Output</h2>
+<p>Extract information from a S4 object of class <a href="https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html">stanfit</a>.</p>
+<p>Use get_stancode to extract the model from the stan output.</p>
+<pre><code>## // Infering a Rate &quot;theta&quot; of a binary process
+## // Section 3.1 
+## // Figure 3.2
+## data {
+##   int&lt;lower=1&gt; n; // at least one observation
+##   int&lt;lower=0&gt; k; // success count can not be negative
+## }
+## 
+## parameters {
+##   real&lt;lower=0, upper=1&gt; theta; // rate bounded by 0 and 1
+## }
+## 
+## model {
+##   //Prior Distribution for Rate Theta
+##   theta ~ beta(1, 1);
+##   
+##   // Observed Counts
+##   // k has a binomial distribution of n observations with theta variation
+##   k ~ binomial(n, theta);
+## }</code></pre>
+<p>Print on a stanfit object shows summary of the model fit:</p>
+<ul>
+<li>first parameter is “theta”</li>
+<li>second parameter is “lp__&quot; - the log posterior density</li>
+<li>se_mean is the Monte Carlo standard error</li>
+<li>n_eff is the effective sample size</li>
+<li>Rhat is the R-hat statistic</li>
+</ul>
+<p>Convergence of log posterior density is critical to declaring convergence (see stan-reference-2.16.0.pdf pg 368-369).</p>
+<pre><code>## Inference for Stan model: binomial_one_rate.
+## 4 chains, each with iter=2000; warmup=1000; thin=1; 
+## post-warmup draws per chain=1000, total post-warmup draws=4000.
+## 
+##        mean se_mean   sd   2.5%   25%   50%   75% 97.5% n_eff Rhat
+## theta  0.58    0.00 0.14   0.30  0.48  0.59  0.68  0.83  1281    1
+## lp__  -8.69    0.02 0.78 -10.86 -8.88 -8.40 -8.21 -8.15  1738    1
+## 
+## Samples were drawn using NUTS(diag_e) at Sat Dec 16 12:36:37 2017.
+## For each parameter, n_eff is a crude measure of effective sample size,
+## and Rhat is the potential scale reduction factor on split chains (at 
+## convergence, Rhat=1).</code></pre>
+</div>
+<div id="diagnostics" class="section level2">
+<h2>Diagnostics</h2>
+<div id="rhat---potential-scale-reduction-statistic" class="section level3">
+<h3>Rhat - potential scale reduction statistic</h3>
+<p>If chains are at equilibrium, rhat will be 1. If the chains have not converged rhat will be greater than one.</p>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-3-1.png" width="480" /></p>
+</div>
+<div id="neff_ratio---look-at-effective-sample-size" class="section level3">
+<h3>neff_ratio - Look at effective sample size</h3>
+<p>Draws in a Markov chain are not independent if there is autocorrelation. If there is autocorrelation, the effective sample size will be smaller than the total sample size, N.</p>
+<p>The larger the ratio of neff to N the better.</p>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+</div>
+<div id="mcmc_acf---autocorrelation-function" class="section level3">
+<h3>mcmc_acf - Autocorrelation Function</h3>
+<p>View autocorrelation for each Markov chain separately up to a specified number of lags.</p>
+<p>Lag - the distance between successive samples.</p>
+<p>The autocorrelation function (ACF) relates correlation and lag. The values of the ACF should quickly decrease with increasing lag. ACFs that do not decrease quickly with lag often indicate that the sampler is not exploring the posterior distribution efficiently and result in increased R^ values and decreased Neff values. (See <a href="https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf">Bayesian inference with Stan: A tutorial on adding custom distributions</a>).</p>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-5-1.png" width="384" /></p>
+</div>
+<div id="evaluate-nuts-sampler" class="section level3">
+<h3>Evaluate NUTS sampler</h3>
+<p>Extract the log posterior (i.e., log_posterior(samples) ) and iterations with divergence (i.e., nuts_params(samples) ) from the stan output.</p>
+<p>Trace plot of MCMC draws and divergence, if any, for NUTS.</p>
+<pre><code>## No divergences to plot.</code></pre>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-6-1.png" width="480" /></p>
+<div id="a-different-look-at-divergence." class="section level5">
+<h5>A different look at divergence.</h5>
+<p>Divergences often indicate that some part of the posterior isn’t being explored. Divergence shows as distortions in the smooth funnel.</p>
+<p><img src="diag_details_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
+</div>
+</div>
+</div>
+<div id="other-diagnostics-graphs" class="section level2">
+<h2>Other Diagnostics &amp; Graphs</h2>
+<p>A more detailed summary using the summary() function.</p>
+<pre><code>## $summary
+##             mean     se_mean        sd        2.5%        25%        50%
+## theta  0.5799059 0.003901466 0.1396456   0.2990563  0.4825571  0.5862972
+## lp__  -8.6939063 0.018687798 0.7791654 -10.8626288 -8.8791850 -8.4005691
+##              75%      97.5%    n_eff     Rhat
+## theta  0.6813911  0.8339296 1281.147 1.004059
+## lp__  -8.2063674 -8.1509108 1738.373 1.001246
+## 
+## $c_summary
+## , , chains = chain:1
+## 
+##          stats
+## parameter       mean        sd        2.5%        25%       50%        75%
+##     theta  0.5825189 0.1330357   0.3225311  0.4926727  0.589468  0.6732102
+##     lp__  -8.6404990 0.7498039 -10.4428005 -8.8192743 -8.352550 -8.1971973
+##          stats
+## parameter     97.5%
+##     theta  0.820949
+##     lp__  -8.150525
+## 
+## , , chains = chain:2
+## 
+##          stats
+## parameter       mean        sd       2.5%        25%        50%        75%
+##     theta  0.5722978 0.1417743   0.279753  0.4734228  0.5796229  0.6756787
+##     lp__  -8.7065085 0.7814133 -10.907407 -8.8882874 -8.4139222 -8.2092875
+##          stats
+## parameter      97.5%
+##     theta  0.8325598
+##     lp__  -8.1511338
+## 
+## , , chains = chain:3
+## 
+##          stats
+## parameter       mean       sd        2.5%       25%       50%        75%
+##     theta  0.5774489 0.138483   0.2964121  0.477725  0.583742  0.6772734
+##     lp__  -8.6824826 0.745806 -10.8626288 -8.838242 -8.400059 -8.2101127
+##          stats
+## parameter     97.5%
+##     theta  0.835351
+##     lp__  -8.151059
+## 
+## , , chains = chain:4
+## 
+##          stats
+## parameter       mean        sd        2.5%        25%        50%
+##     theta  0.5873577 0.1447749   0.3059745  0.4852965  0.5919105
+##     lp__  -8.7461351 0.8338485 -10.9892909 -8.9576793 -8.4321885
+##          stats
+## parameter        75%      97.5%
+##     theta  0.6898992  0.8406215
+##     lp__  -8.2110721 -8.1510385</code></pre>
+<div id="other-functions-to-run-on-stanfit-object" class="section level4">
+<h4>Other Functions to run on stanfit object</h4>
+<ul>
+<li>stan_trace(samples)</li>
+<li>stan_hist(samples)</li>
+<li>stan_dens(samples)</li>
+<li>stan_scat(samples)</li>
+<li>stan_diag(samples)</li>
+<li>stan_rhat(samples)</li>
+<li>stan_ess(samples)</li>
+<li>stan_mcse(samples)</li>
+<li>stan_ac(samples)</li>
+</ul>
+</div>
 </div>
 
 <p>Copyright &copy; 2017 OBrien Consulting - All rights reserved.</p>
 
 
+</div>
+</div>
 
 </div>
 
