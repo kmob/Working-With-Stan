@@ -1,7 +1,32 @@
 ---
-  title: "Diagnostics"
+title: "Diagnostics"
+output:
+  html_document:
+    fig_caption: yes
+    fig_height: 3
+    fig_width: 5
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: no
+date: "12/16/2017"
+params:
+  code_dir: ../src/
+  data_dir: ../data/
+  model_dir: ../model/ 
 ---
-  
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(rstan)
+library(bayesplot)
+library(dplyr)
+library(feather)
+library(ggplot2)
+
+```
+
 ### Diagnostic tools in Stan
 
 
