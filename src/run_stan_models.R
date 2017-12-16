@@ -19,11 +19,11 @@ source(paste(code_dir,"post_density_bayesplot.r",sep = ""))
 obs_ct <- 10
 ##-- one or two processes and the simulated process rates --##
 ### Data for one process ###
-# data_name <- "one_process"
-# rate_list <- c(0.6)
+data_name <- "one_process"
+rate_list <- c(0.6)
 ### Data for two processes ###
-data_name <- "two_process"
-rate_list <- c(0.6, 0.5)
+# data_name <- "two_process"
+# rate_list <- c(0.6, 0.5)
 
 ## current models are: 
 # one_process (Graphical Model with one process)

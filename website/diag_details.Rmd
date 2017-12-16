@@ -27,7 +27,168 @@ library(ggplot2)
 
 ```
 
-### Diagnostic tools in Stan
+## The Data: One Process
+
+Independent observations with two possible outcomes on a trial.
+
+```{r create_data, message = FALSE, results = "hide", cache = TRUE}
+
+##### Data #####
+# Read Data
+data_file <- "one_process"
+data <- read_feather(paste(params$data_dir, data_file, ".feather", sep = ""))
+
+# Stan needs data in a list
+success_data <- data %>%
+  dplyr::filter(outcome == 'success')
+  
+stan_data <- list(
+  n = nrow(data),
+  k = nrow(success_data)
+)
+parameters <- c("theta")
+model_code <- paste(params$model_dir, "binomial_one_rate.stan", sep = "")
+parameters <- c("theta")
+
+  # Run Stan with defaults
+samples <- stan(file=model_code,
+                        data=stan_data,
+                        refresh = 0)
+```
+
+Use ggplot to generate a data graph showing successes, failures, and total observations.
+```{r visualize_data}
+
+# Visualize Data
+ggplot(data, aes(x = process)) + geom_bar(aes(fill=outcome))
+```
+
+## The Model
+
+A graphical representation of the model shows:
+
+ * a continuous, unobserved "process" parameter $\theta$
+ * a discrete, observable number of successes *k*
+ * a discrete, observable number of observations *n*
+
+The vector's arrow shows dependency. Successes are dependent on both the underlying process $\theta$ and the number of observations.
+
+The assumption for $\theta$ is that all possible rates are equally likely. The Beta distribution is set with 1 "success" and 1 "failure".
+
+The assumption of *k* is that the outcomes are from a Binomial distribution with $\theta$ determining the rate for *n* observations.
+
+```{r graphical_model, echo = FALSE, message = FALSE}
+# Visualize Model
+source(paste(params$code_dir,"gm_binary_process.r",sep = ""))
+gm_binary_process()
+```
+### Basic Stan Output
+
+Info from a S4 object of class [stanfit](https://cran.r-project.org/web/packages/rstan/vignettes/stanfit-objects.html)
+
+Use get_stancode to extract the model from the stan output
+```{r}
+# get_stancode extracts the model
+stan_model <- get_stancode(samples)
+cat(stan_model)
+```
+
+Print on a stanfit object shows summary of parameter and log-posterior (lp__) posterior mean, posterior standard deviation, and quantiles:
+
+* first parameter is "theta"
+* second parameter is "lp__" - the log posterior density 
+* se_mean is the Monte Carlo standard error
+* n_eff is the effective sample size
+* Rhat is the R-hat statistic
+
+Convergence of log posterior density is critical to declaring convergence (see stan-reference-2.16.0.pdf pg 368-369).
 
 
-### Diagnostic tools in BayesPlot
+```{r}
+print(samples)  # a rough summary
+```
+
+### Diagnostics 
+
+#### Rhat - potential scale reduction statistic
+If chains are at equilibrium, rhat will be 1. 
+If the chains have not converged rhat will be greater than one.
+
+```{r}
+rhats <- rhat(samples)
+color_scheme_set("brightblue") # see help("color_scheme_set")
+mcmc_rhat(rhats) + yaxis_text(hjust = 1)
+```
+
+
+
+#### neff_ratio - Look at effective sample size
+Draws in a Markov chain are not independent if there is autocorrelation. If there is autocorrelation, the effective sample size will be smaller than the total sample size, N. 
+
+The larger the ratio of neff to N the better.
+
+```{r}
+ratios_cp <- neff_ratio(samples)
+mcmc_neff(ratios_cp, size = 2)
+```
+
+
+#### mcmc_acf - Autocorrelation - centered parameterization (CP)
+View autocorrelation for each Markov chain separately up to a specified number of lags.
+
+Lag - the distance between successive samples.
+
+The autocorrelation function (ACF) relates correlation and lag. The values of the ACF should quickly decrease with increasing lag. ACFs that do not decrease quickly with lag often indicate that the sampler is not exploring the posterior distribution efficiently and result in increased R^ values and decreased Neff values. (See [Bayesian inference with Stan: A tutorial on adding custom distributions](https://my.vanderbilt.edu/jeffannis/files/2016/06/AnnisMillerPalmeri2016.pdf)).
+```{r, fig.width=4, fig.height=4}
+posterior_cp <- as.array(samples)
+mcmc_acf(posterior_cp, pars = parameters, lags = 10)
+```
+
+#### Evaluate NUTS sampler
+Extract the log posterior (i.e., log_posterior(samples) ) and iterations with divergence (i.e., nuts_params(samples) ) from the stan output. 
+
+Trace plot of MCMC draws and divergence, if any, for NUTS.
+  
+```{r}
+lp_cp <- log_posterior(samples)
+np_cp <- nuts_params(samples)
+color_scheme_set("mix-brightblue-gray")
+mcmc_trace(posterior_cp, pars = parameters, np = np_cp) +
+  xlab("Post-warmup iteration")
+```
+
+##### A different look at divergence.
+Divergences often indicate that some part of the posterior isn’t being explored. Divergence shows as distortions in the smooth funnel.
+
+```{r}
+color_scheme_set("red")
+mcmc_nuts_divergence(np_cp, lp_cp)
+```
+
+
+
+
+
+#### Other Diagnostics & Graphs
+
+A more detailed summary.
+```{r}
+print(summary(samples))  
+```
+
+
+#point estimate and variability 2 levels
+stan_trace(samples)
+stan_hist(samples)
+stan_dens(samples)
+stan_scat(samples)
+stan_diag(samples)
+stan_rhat(samples)
+stan_ess(samples)
+stan_mcse(samples)
+stan_ac(samples)
+
+as.array(samples)[1:15,,2]  # array: sample, chain, parameter 
+
+
+
