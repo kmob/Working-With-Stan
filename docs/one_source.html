@@ -336,13 +336,13 @@ div.tocify {
 ##      &lt;chr&gt; &lt;dbl&gt;   &lt;chr&gt;
 ##  1 theta_1     1 success
 ##  2 theta_1     0 failure
-##  3 theta_1     0 failure
-##  4 theta_1     1 success
+##  3 theta_1     1 success
+##  4 theta_1     0 failure
 ##  5 theta_1     1 success
-##  6 theta_1     0 failure
-##  7 theta_1     1 success
-##  8 theta_1     0 failure
-##  9 theta_1     1 success
+##  6 theta_1     1 success
+##  7 theta_1     0 failure
+##  8 theta_1     1 success
+##  9 theta_1     0 failure
 ## 10 theta_1     0 failure</code></pre>
 <p>Use <strong>class(data)</strong> to learn the class of the r object.</p>
 <pre><code>## [1] &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
@@ -367,8 +367,8 @@ div.tocify {
 <p>The vector’s arrow shows dependency. Successes are dependent on both the underlying process <span class="math inline">\(\theta\)</span> and the number of observations.</p>
 <p>The assumption for <span class="math inline">\(\theta\)</span> is that all possible rates are equally likely. The Beta distribution is set with 1 “success” and 1 “failure”.</p>
 <p>The assumption of <em>k</em> is that the outcomes are from a Binomial distribution with <span class="math inline">\(\theta\)</span> determining the rate for <em>n</em> observations.</p>
-<div id="htmlwidget-c02b49593321b985497c" style="width:200px;height:200px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c02b49593321b985497c">{"x":{"diagram":"\n    digraph boxes_and_circles {\n    \n    # graph statement\n    graph [overlap=false, fontsize=10]\n    \n    # node statements\n    node [shape=circle,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=1]\n    t [ label=<&theta;>]\n    \n    node [shape=square,\n    color=black,\n    style=filled,\n    fillcolor=grey,\n    peripheries=1]\n    k [label=<<I>k<\/I>>]\n    n [label=<<I>n<\/I>>]\n    \n    node [shape=plain,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=0]\n    note_1 [label=<&theta; ~ Beta(1,1)>]\n    note_2 [label=<<I>k <\/I> ~ Binomial(&theta;,<I>n<\/I>)>]\n    \n    subgraph {\n    rank = same; t; note_1;\n    }\n    \n    subgraph {\n    rank = same; k; note_2;\n    }\n    \n    # edge statements\n    edge [arrowhead=vee,arrowtail=vee]\n    t->k\n    k->n [dir=back]\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1f90e3e84246b005a9a7" style="width:200px;height:200px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1f90e3e84246b005a9a7">{"x":{"diagram":"\n    digraph boxes_and_circles {\n    \n    # graph statement\n    graph [overlap=false, fontsize=10]\n    \n    # node statements\n    node [shape=circle,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=1]\n    t [ label=<&theta;>]\n    \n    node [shape=square,\n    color=black,\n    style=filled,\n    fillcolor=grey,\n    peripheries=1]\n    k [label=<<I>k<\/I>>]\n    n [label=<<I>n<\/I>>]\n    \n    node [shape=plain,\n    color=black,\n    style=filled,\n    fillcolor=white,\n    peripheries=0]\n    note_1 [label=<&theta; ~ Beta(1,1)>]\n    note_2 [label=<<I>k <\/I> ~ Binomial(&theta;,<I>n<\/I>)>]\n    \n    subgraph {\n    rank = same; t; note_1;\n    }\n    \n    subgraph {\n    rank = same; k; note_2;\n    }\n    \n    # edge statements\n    edge [arrowhead=vee,arrowtail=vee]\n    t->k\n    k->n [dir=back]\n    }\n    ","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <p>The Stan model follows from the graphical model. The data block names <em>n</em> and <em>k</em> and sets lower boundaries. The parameters block names <span class="math inline">\(\theta\)</span> and sets upper and lower boundaries. The model block sets the prior distribution for <span class="math inline">\(\theta\)</span> and the model for <em>k</em>.</p>
 <pre><code>## data {
 ##   int&lt;lower=1&gt; n; // at least one observation

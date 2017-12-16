@@ -104,8 +104,8 @@ The assumption of *k* is that the outcomes are from a Binomial distribution with
 
 ```{r graphical_model, echo = FALSE, message = FALSE}
 # Visualize Model
-source(paste(params$code_dir,"gm_two_rates.r",sep = ""))
-gm_two_rates()
+source(paste(params$code_dir,"gm_two_process.r",sep = ""))
+gm_two_process()
 ```
 
 
